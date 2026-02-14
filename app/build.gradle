@@ -102,7 +102,7 @@ dependencies {
     // Core
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation 'androidx.core:core-ktx:1.17.0'
-    implementation 'androidx.activity:activity-ktx:1.12.3'
+    implementation 'androidx.activity:activity-ktx:1.12.4'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
 
     // Room components
