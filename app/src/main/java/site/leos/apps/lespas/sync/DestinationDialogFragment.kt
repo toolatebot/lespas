@@ -93,8 +93,10 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
     private lateinit var copyOrMoveToggleGroup: MaterialButtonToggleGroup
     private lateinit var newAlbumTextInputLayout: TextInputLayout
     private lateinit var newAlbumTitleTextInputEditText: TextInputEditText
-    private lateinit var toAlbumTextView: TextView
+    private lateinit var okButton: MaterialButton
+    private lateinit var cancelButton: MaterialButton
     private lateinit var remoteAlbumCheckBox: CheckBox
+    private lateinit var toAlbumTextView: TextView
     private lateinit var nameFilterSearchView: SearchView
     private var remoteAlbumIconDrawableSize = 16
 
@@ -257,7 +259,7 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
         }
         clipDataRecyclerView = view.findViewById(R.id.clipdata_recyclerview)
         destinationRecyclerView = view.findViewById(R.id.destination_recyclerview)
-        copyOrMoveToggleGroup = view.findViewById<MaterialButtonToggleGroup?>(R.id.move_or_copy).apply { check(if (destinationModel.shouldRemoveOriginal()) R.id.move else R.id.copy) }
+        copyOrMoveToggleGroup = view.findViewById<MaterialButtonToggleGroup>(R.id.move_or_copy).apply { check(if (destinationModel.shouldRemoveOriginal()) R.id.move else R.id.copy) }
         nameFilterSearchView = view.findViewById<SearchView>(R.id.name_filter).apply {
             // When resume from device rotation
             if (currentFilter.isNotEmpty()) {
@@ -286,7 +288,7 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
             }
         }
 
-        newAlbumTextInputLayout = view.findViewById<TextInputLayout?>(R.id.new_album_textinputlayout).apply {
+        newAlbumTextInputLayout = view.findViewById<TextInputLayout>(R.id.new_album_textinputlayout).apply {
             this.editText?.run {
                 compoundDrawablePadding = 16
                 TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(currentTextColor))
@@ -295,7 +297,7 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
         }
         newAlbumTitleTextInputEditText = view.findViewById(R.id.name_textinputedittext)
         toAlbumTextView = view.findViewById(R.id.to)
-        remoteAlbumCheckBox = view.findViewById<CheckBox?>(R.id.create_remote_album).apply {
+        remoteAlbumCheckBox = view.findViewById<CheckBox>(R.id.create_remote_album).apply {
             setOnCheckedChangeListener { _, isChecked ->
                 newAlbumTitleTextInputEditText.setCompoundDrawables(
                     if (isChecked) ContextCompat.getDrawable(context, R.drawable.ic_baseline_wb_cloudy_24)?.apply { setBounds(0, 0, remoteAlbumIconDrawableSize, remoteAlbumIconDrawableSize) } else null,
@@ -303,7 +305,6 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
                 )
             }
         }
-
         clipDataRecyclerView.adapter = clipDataAdapter
         destinationRecyclerView.adapter = albumAdapter
         destinationRecyclerView.doOnPreDraw {
@@ -321,29 +322,18 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
             setOnEditorActionListener { _, actionId, keyEvent ->
                 if (actionId == EditorInfo.IME_ACTION_GO || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                     // Validate the name
-                    error ?: run {
-                        val name = this.text.toString().trim()    // Trim the leading and trailing blank
-                        if (name.isNotEmpty()) {
-                            // Clear editing mode
-                            destinationModel.setEditMode(false)
-
-                            requireArguments().getString(KEY_REQUEST)?.let { requestKey ->
-                                parentFragmentManager.setFragmentResult(requestKey, bundleOf(
-                                    // Return with album id field empty, calling party will know this is a new album
-                                    KEY_TARGET_ALBUM to Album(name = name, lastModified = LocalDateTime.now(), shareId = if (remoteAlbumCheckBox.isChecked) Album.REMOTE_ALBUM else Album.NULL_ALBUM),
-                                    KEY_REMOVE_ORIGINAL to (copyOrMoveToggleGroup.checkedButtonId == R.id.move),
-                                    KEY_DO_ON_SERVER to remotePhotos.isNotEmpty(),
-                                    KEY_REMOTE_PHOTOS to remotePhotos
-                                ))
-                            }
-
-                            dismiss()
-                        }
-                    }
+                    error ?: createNewAlbum(this.text.toString())
                     true
                 } else false
             }
         }
+        okButton = view.findViewById<MaterialButton>(R.id.ok_button).apply {
+            setOnClickListener { createNewAlbum(newAlbumTitleTextInputEditText.text.toString()) }
+        }
+        cancelButton = view.findViewById<MaterialButton>(R.id.cancel_button).apply {
+            setOnClickListener { dismiss() }
+        }
+
 
         // Maintain current mode after screen rotation
         if (destinationModel.isEditing()) showNewAlbumEditText()
@@ -440,6 +430,26 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
 
     private fun setAlbums() {
         albumAdapter.submitList(if (currentFilter.isNotEmpty()) albums.filter { it.album.name.contains(currentFilter, true) } else albums)
+    }
+
+    private fun createNewAlbum(title: String) {
+        val name = title.trim()    // Trim the leading and trailing blank
+        if (name.isNotEmpty()) {
+            // Clear editing mode
+            destinationModel.setEditMode(false)
+
+            requireArguments().getString(KEY_REQUEST)?.let { requestKey ->
+                parentFragmentManager.setFragmentResult(requestKey, bundleOf(
+                    // Return with album id field empty, calling party will know this is a new album
+                    KEY_TARGET_ALBUM to Album(name = name, lastModified = LocalDateTime.now(), shareId = if (remoteAlbumCheckBox.isChecked) Album.REMOTE_ALBUM else Album.NULL_ALBUM),
+                    KEY_REMOVE_ORIGINAL to (copyOrMoveToggleGroup.checkedButtonId == R.id.move),
+                    KEY_DO_ON_SERVER to remotePhotos.isNotEmpty(),
+                    KEY_REMOTE_PHOTOS to remotePhotos
+                ))
+            }
+
+            dismiss()
+        }
     }
 
     class DestinationAdapter(private val itemClickListener: (RemoteAlbum)-> Unit, private val imageLoader: (RemoteAlbum, ImageView, String)-> Unit, private val avatarLoader: (NCShareViewModel.Sharee, View)-> Unit, private val cancelLoader: (View)-> Unit)
