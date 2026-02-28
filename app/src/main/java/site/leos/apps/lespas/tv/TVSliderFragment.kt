@@ -729,14 +729,14 @@ class TVSliderFragment: Fragment() {
                             }
                         }
                         KeyEvent.ACTION_DOWN -> {
-                            if (event.repeatCount == 5) {
+                            if (event.repeatCount == 3) {
                                 when (keyCode) {
                                     KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER, KeyEvent.KEYCODE_BUTTON_SELECT, KeyEvent.KEYCODE_BUTTON_A -> cmLauncher()
                                     KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_BUTTON_L1, KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_BUTTON_R1 -> fsLauncher()
                                 }
                             }
 
-                            return event.repeatCount >= 5
+                            return event.repeatCount >= 3
                         }
                     }
                     
