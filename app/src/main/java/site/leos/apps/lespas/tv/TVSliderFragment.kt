@@ -619,6 +619,7 @@ class TVSliderFragment: Fragment() {
                     (if (overlays.last() is Marker) overlays.last() as Marker else Marker(this)).let {
                         it.position = poi
                         it.icon = ContextCompat.getDrawable(this.context, R.drawable.ic_baseline_location_marker_24)
+                        it.icon.setTint(ContextCompat.getColor(requireContext(), R.color.color_primary))
                         this.overlays.add(it)
                     }
 
