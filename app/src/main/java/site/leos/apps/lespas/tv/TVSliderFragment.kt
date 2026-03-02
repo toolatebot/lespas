@@ -164,7 +164,8 @@ class TVSliderFragment: Fragment() {
             { media, imageView, plManager, panorama -> imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_PANORAMA, plManager, panorama) },
             { view -> imageLoaderModel.cancelSetImagePhoto(view) },
             { delta ->
-                if (!metaPage.isVisible) {
+                if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
+                else {
                     hideCaptionPage()
                     // Use fake drag to move back and forth
                     slider.beginFakeDrag()
@@ -173,7 +174,10 @@ class TVSliderFragment: Fragment() {
                 }
             },
             { media -> toggleMeta(media, metaPage.isVisible) },
-            { state -> toggleCaption(state) },
+            { state ->
+                if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
+                else toggleCaption(state)
+            },
             { showFastScroller() },
             {},
         )
