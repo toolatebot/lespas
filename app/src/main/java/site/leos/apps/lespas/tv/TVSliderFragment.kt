@@ -178,7 +178,7 @@ class TVSliderFragment: Fragment() {
                 if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
                 else toggleCaption(state)
             },
-            { showFastScroller() },
+            { if (!metaPage.isVisible) showFastScroller() },
             {},
         )
 
