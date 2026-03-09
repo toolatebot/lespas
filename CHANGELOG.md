@@ -1,3 +1,7 @@
+## Version 2.11.1
+* Optimized experience on Android TV
+* Various improvements and bug fixes
+
 ## Version 2.11.0
 * Support Material Dynamic Theme, thanks to Github user [@flamboyantpenguin](https://github.com/flamboyantpenguin)
 * Support integration with various photo retouching apps and video editing apps

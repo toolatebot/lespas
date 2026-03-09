@@ -164,7 +164,8 @@ class TVSliderFragment: Fragment() {
             { media, imageView, plManager, panorama -> imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_PANORAMA, plManager, panorama) },
             { view -> imageLoaderModel.cancelSetImagePhoto(view) },
             { delta ->
-                if (!metaPage.isVisible) {
+                if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
+                else {
                     hideCaptionPage()
                     // Use fake drag to move back and forth
                     slider.beginFakeDrag()
@@ -173,8 +174,11 @@ class TVSliderFragment: Fragment() {
                 }
             },
             { media -> toggleMeta(media, metaPage.isVisible) },
-            { state -> toggleCaption(state) },
-            { showFastScroller() },
+            { state ->
+                if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
+                else toggleCaption(state)
+            },
+            { if (!metaPage.isVisible) showFastScroller() },
             {},
         )
 
@@ -615,6 +619,7 @@ class TVSliderFragment: Fragment() {
                     (if (overlays.last() is Marker) overlays.last() as Marker else Marker(this)).let {
                         it.position = poi
                         it.icon = ContextCompat.getDrawable(this.context, R.drawable.ic_baseline_location_marker_24)
+                        it.icon.setTint(ContextCompat.getColor(requireContext(), R.color.color_primary))
                         this.overlays.add(it)
                     }
 
@@ -729,14 +734,14 @@ class TVSliderFragment: Fragment() {
                             }
                         }
                         KeyEvent.ACTION_DOWN -> {
-                            if (event.repeatCount == 5) {
+                            if (event.repeatCount == 3) {
                                 when (keyCode) {
                                     KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER, KeyEvent.KEYCODE_BUTTON_SELECT, KeyEvent.KEYCODE_BUTTON_A -> cmLauncher()
                                     KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_BUTTON_L1, KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_BUTTON_R1 -> fsLauncher()
                                 }
                             }
 
-                            return event.repeatCount >= 5
+                            return event.repeatCount >= 3
                         }
                     }
                     

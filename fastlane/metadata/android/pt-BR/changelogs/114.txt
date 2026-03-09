@@ -1,0 +1,2 @@
+* Experiência otimizada na Android TV
+* Várias melhorias e correções de bugs
