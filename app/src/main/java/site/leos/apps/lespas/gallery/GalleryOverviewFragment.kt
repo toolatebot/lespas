@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 import site.leos.apps.lespas.R
 import site.leos.apps.lespas.helper.ConfirmDialogFragment
 import site.leos.apps.lespas.helper.LesPasEmptyView
+import site.leos.apps.lespas.helper.MetaDataDialogFragment
 import site.leos.apps.lespas.helper.ShareOutDialogFragment
 import site.leos.apps.lespas.helper.Tools
 import site.leos.apps.lespas.photo.Photo
@@ -466,6 +467,8 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
             isEnabled = false
         }
 
+        menu?.findItem(R.id.info)?.isEnabled = selectionTracker.selection.size() == 1
+
         downloadMenuItem?.apply {
             isEnabled = false
             run breaking@ {
@@ -536,6 +539,20 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                 if (photos.isNotEmpty()) galleryModel.upload(photos)
 
                 selectionTracker.clearSelection()
+                true
+            }
+            R.id.info -> {
+                if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) {
+                    selectionTracker.selection.first().let { photoId ->
+                        overviewAdapter.getRemotePhoto(photoId)?.let { remotePhoto ->
+                            MetaDataDialogFragment.newInstance(remotePhoto, hasSizeInfo = true).show(parentFragmentManager, INFO_DIALOG)
+                        } ?: run {
+                            overviewAdapter.getGalleryMedia(photoId)?.let { galleryMedia ->
+                                MetaDataDialogFragment.newInstance(galleryMedia.media, hasSizeInfo = false).show(parentFragmentManager, INFO_DIALOG)
+                            }
+                        }
+                    }
+                }
                 true
             }
             else -> false
@@ -863,6 +880,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
         private const val CONFIRM_DIALOG = "CONFIRM_DIALOG"
         private const val BACKUP_OPTION_DIALOG = "BACKUP_OPTION_DIALOG"
         private const val SHARE_OUT_DIALOG = "SHARE_OUT_DIALOG"
+        private const val INFO_DIALOG = "INFO_DIALOG"
 
         private const val GALLERY_OVERVIEW_REQUEST_KEY = "GALLERY_OVERVIEW_REQUEST_KEY"
         private const val BACKUP_EXISTING_REQUEST_KEY = "BACKUP_EXISTING_REQUEST_KEY"
