@@ -317,7 +317,8 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                                         totalSize += mediaAdapter.getFileSize(selected)
                                     }
 
-                                    it.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                    if (selectionSize != 1) it.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                    else it.title = mediaAdapter.getPhotoName(selectionTracker.selection.first())
                                     it.subtitle = Tools.humanReadableByteCountSI(totalSize)
                                 }
 
@@ -918,6 +919,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         internal fun atLocal(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.let { it.atLocal() || it.isLocal() }?: false
         internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.atRemote()) item.media else null }
         internal fun getGalleryMedia(photoId: String?): GalleryFragment.GalleryMedia? = currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.isLocal() || item.atLocal()) item else null }
+        internal fun getPhotoName(photoId: String): String = currentList.find { it.media.photo.id == photoId }?.media?.photo?.name ?: ""
 
         internal fun locationOfSelected(): Int {
             val x: Int = currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(0) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA

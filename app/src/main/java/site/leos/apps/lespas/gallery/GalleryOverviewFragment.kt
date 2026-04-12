@@ -246,7 +246,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                         if (selectionTracker.hasSelection() && actionMode == null) {
                             actionMode = (requireActivity() as AppCompatActivity).startSupportActionMode(this@GalleryOverviewFragment)
                             actionMode?.run {
-                                title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                title = if (selectionSize != 1) resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize) else overviewAdapter.getPhotoName(selectionTracker.selection.first())
                                 subtitle = overviewAdapter.getSelectionFileSize()
                             }
                             selectionBackPressedCallback.isEnabled = true
@@ -257,7 +257,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                             selectionBackPressedCallback.isEnabled = false
                         } else {
                             actionMode?.run {
-                                title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                title = if (selectionSize != 1) resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize) else overviewAdapter.getPhotoName(selectionTracker.selection.first())
                                 subtitle = overviewAdapter.getSelectionFileSize()
                             }
                         }
@@ -800,6 +800,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
         internal fun atLocal(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.let { it.atLocal() || it.isLocal() }?: false
         internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.atRemote()) item.media else null }
         internal fun getGalleryMedia(photoId: String?): GalleryFragment.GalleryMedia? = currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.isLocal() || item.atLocal()) item else null }
+        internal fun getPhotoName(photoId: String): String = currentList.find { it.media.photo.id == photoId }?.media?.photo?.name ?: ""
 
         internal fun locationOfSelected(): Int {
             val x: Int = currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(0) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA
