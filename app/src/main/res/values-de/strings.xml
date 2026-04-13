@@ -32,8 +32,6 @@
     <!-- NCLogin activity -->
     <string name="welcome_message_title">Willkommen bei Les Pas!</string>
     <string name="welcome_message">Um zu beginnen, gewähren Sie bitte Zugriff auf Ihren Nextcloud-Server.</string>
-    <string name="host_textinput_label">Server-Adresse</string>
-    <string name="url_helper_text">z.B. https://example.com/nextcloud</string>
     <string name="http_toggle_helper_text">\u2B11Tippen Sie auf das Präfix, um das unsichere HTTP zu aktivieren.</string>
     <string name="verify_ssl_certificate_title">Ungültiges SSL-Zertifikat</string>
     <string name="verify_ssl_certificate_message">Das Zertifikat von Server %1$s kann NICHT verifiziert werden. Wollen Sie diesem Server vertrauen und fortfahren?</string>
@@ -204,13 +202,10 @@
     <string name="camera_roll_name">Kamera</string>
     <string name="msg_remove_old_files_warning">WARNUNG: Wenn Sie bei der ersten Aktivierung der Datensicherung für diesen Ordner keine vorhandenen Dateien gesichert haben, werden diese vorhandenen Dateien durch die Aktivierung dieser Einstellung ebenfalls gelöscht!</string>
     <string name="button_text_i_understand">Ich verstehe</string>
-    <string name="checkbox_text_remove_archive_too">Auch die auch die Sicherungskopie im Server-Archiv löschen</string>
     <string name="checkbox_text_remove_archive_copy">Archivierte Kopie auf dem Server</string>
     <string name="button_text_grant">Autorisieren Sie</string>
     <string name="tooltips_search_album">In den Alben suchen</string>
     <string name="tooltips_search_gallery">Suche in der Galerie</string>
-    <string name="condition_to_perform_search">Es muss mindestens ein Album vorhanden sein ODER Les Pas muss auf lokale zugreifen dürfen, um die Suchfunktion zu nutzen.</string>
-    <string name="button_text_leave">Abbrechen</string>
     <string name="need_albums">Bitte erstellen Sie zuerst ein Album.</string>
     
     <!-- Search Result Fragment -->
@@ -227,7 +222,6 @@
     <string name="item_refresh_publication">Veröffentlichungen aktualisieren</string>
 
     <!-- Remote Media Fragment -->
-    <string name="button_text_download">Download</string>
     <string name="button_text_add_to_lespas">Zu Album hinzufügen</string>
 
     <!-- Image Recognition -->
@@ -257,15 +251,9 @@
     <string name="option_menu_name_filter">Nach Namen filtern</string>
     <string name="hidden_albums">Versteckte Alben:</string>
     <string name="item_unhide">Einblenden</string>
-    <string name="button_text_scan">App-Passwort scannen</string>
     <string name="option_menu_map_slideshow">Diashow</string>
-    <string name="backup_exif_location_permission_rationale">So sichern Sie im Foto gespeicherte GPS-Daten</string>
-    <string name="search_exif_location_permission_rationale">So suchen Sie in der Galerie nach Standortinformationen</string>
-    <string name="read_exif_location_permission_rationale">So zeigen Sie Standortinformationen von Fotos an</string>
-    <string name="need_access_media_location_permission">Les Pas benötigt eine Genehmigung für den Zugriff auf den Medienstandort.</string>
     <string name="unlock_please">Versteckte Alben freischalten</string>
     <string name="item_bgm">Hintergrundmusik verwalten</string>
-    <string name="option_menu_mute">Stummschaltung umschalten</string>
     <string name="skip_late_night_update">Nächtliche Aktualisierung überspringen</string>
     <string name="not_hiding">Die folgenden Namen existierten bereits in der Liste der versteckten Alben: %1$s</string>
     <string name="default_sort_order_title">Standardsortierung von Fotos für neue Alben</string>
@@ -273,8 +261,6 @@
     <string name="msg_set_as_local">Wenn Sie das Album als \"Lokal\" einstellen, werden alle Mediendateien vom Server heruntergeladen, was eine Weile dauern kann. Wie vorgehen?</string>
     <string name="action_set_remote">Remote einstellen</string>
     <string name="action_set_local">Lokal einstellen</string>
-    <string name="msg_check_network">Überprüfen Sie Ihre Serververbindung.</string>
-    <string name="msg_error_preparing_share_out_files">Fehler Mediendateien vorzubereiten.</string>
     <string name="to_new_album">Zum neuen Album:</string>
     <string name="clear_cache_title">Remote-Alben-Cache löschen</string>
     <string name="msg_clear_cache">Alle entfernten Bilddateien werden aus dem Cache entfernt. Fortfahren?</string>
@@ -290,7 +276,6 @@
     <string name="chinese_map_title">Chinesische Karten-App verwenden</string>
     <string name="chinese_map_summary">Alle Kartenanwendungen in China verwenden ein besonderes Koordinatensystem.</string>
     <string name="map_header">Karte</string>
-    <string name="msg_server_operation">Die Fotos werden nach der Synchronisierung mit dem Server im Zielalbum angezeigt.</string>
     <string name="item_wide_list">Name anzeigen</string>
     <string name="action_export">Exportieren</string>
     <string name="action_rename_media">Umbenennen</string>
@@ -298,7 +283,6 @@
     <string name="nearby_convergence_title">Fotos in der Nähe automatisch zusammenführen</string>
     <string name="nearby_convergence_summary">Beim Abspielen der Diashow auf der Karte werden die Fotos mit dem nächstgelegenen Foto mit GPS-Koordinaten zusammengeführt.</string>
     <string name="true_black_title">Echt schwarzes Thema</string>
-    <string name="tooltips_fetch_backup">Backups auf dem Server anzeigen</string>
     <string name="tooltips_enable_backup">Sicherung einschalten</string>
     <string name="tooltips_backup_setting">Backup-Einstellung</string>
     <string name="msg_archive_empty">Archiv leer, bis Sie mit der Sicherung Ihrer Galerie beginnen.</string>
@@ -314,12 +298,10 @@
     <string name="sync_status_action_delete_media">Entfernen von %1$s in Album \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Album \'%s\' wird entfernt</string>
     <string name="sync_status_action_add_media">Hinzufügen von %1$s zum Album \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Hinzufügen des Albums \'%s\'</string>
     <string name="sync_status_action_rename_album">Umbenennung des Albums \'%1$s\' in \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Album \'%s\' wird versteckt</string>
     <string name="sync_status_action_unhide_album">Einblenden des Albums \'%s\'</string>
     <string name="sync_status_action_update_file">Aktualisierung von %1$s im Album \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Aktualisierung des Covers von Album \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Hinzufügen von %1$s zum gemeinsamen Album \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Aktualisierung der Metadaten des gemeinsamen Albums \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Aktualisierung der Metadaten des Albums \'%s\'</string>
@@ -386,7 +368,6 @@
     <string name="msg_invalid_gpx_file">%1$s ist ungültig, oder es wurde kein Zeitstempel gefunden!</string>
     <string name="suffix_gpx_offset">Minuten Differenz erlaubt</string>
     <string name="item_export_gpx">GPX exportieren</string>
-    <string name="checkbox_text_dst">Sommerzeit-Korrektur</string>
     <string name="hint_gpx_export_file_location">Die Datei wird im Ordner \"Download\" gespeichert.</string>
     <string name="trash_name">Papierkorb</string>
     <string name="gallery_backup_option_dialog_title">Einstellungen von \'%1$s\'</string>

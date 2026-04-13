@@ -20,8 +20,6 @@
     <string name="error_only_one_account">Sólo se permite una cuenta</string>
     <string name="welcome_message_title">¡Bienvenido a Les Pas!</string>
     <string name="welcome_message">Para empezar, por favor conceda acceso en su servidor de Nextcloud.</string>
-    <string name="host_textinput_label">Dirección del servidor</string>
-    <string name="url_helper_text">Por ejemplo, https://example.com/nextcloud</string>
     <string name="msg_install_qrcode_scanner">Instala primero una aplicación de escáner de códigos QR compatible. Como %1$sSecScanQR de F-Droid</string>
     <string name="host_address_validation_error">Dirección no válida.</string>
     <string name="host_not_valid">La dirección no es válida (%1$d).</string>
@@ -130,15 +128,12 @@
     <string name="camera_roll_name">Cámara</string>
     <string name="msg_remove_old_files_warning">ADVERTENCIA: Si eligió no hacer copia de seguridad de los archivos existentes cuando activó por primera vez la copia de seguridad para esta carpeta, esos archivos existentes TAMBIÉN SERÁN ELIMINADOS al activar esta opción.</string>
     <string name="button_text_i_understand">Comprendo</string>
-    <string name="checkbox_text_remove_archive_too">Eliminar también la copia de seguridad en el archivo del servidor</string>
     <string name="checkbox_text_remove_archive_copy">Copia de archivo en servidor</string>
     <string name="button_text_grant">Autorizzare</string>
     <string name="tooltips_search_album">En álbumes</string>
     <string name="tooltips_search_gallery">Buscar en la galería</string>
     <string name="title_in_album">%1$s en álbumes</string>
     <string name="title_in_gallery">%1$s en Galería</string>
-    <string name="condition_to_perform_search">Debe haber al menos un álbum existente O un permiso de acceso al almacenamiento concedido para realizar la función de búsqueda.</string>
-    <string name="button_text_leave">Salir</string>
     <string name="need_albums">Por favor, cree primero un álbum.</string>
     <string name="to_album">Al álbum:</string>
     <string name="move_files">Mover</string>
@@ -183,7 +178,6 @@
     <string name="relogin_title">Reinicio de sesión</string>
     <string name="relogin_summary">Si accidentalmente revocó la clave de acceso de Les Pas en el servidor.</string>
     <string name="auto_replay_title">Reproducir el vídeo automáticamente</string>
-    <string name="button_text_download">Descargar</string>
     <string name="button_text_add_to_lespas">Añadir al álbum</string>
     <string name="remove_meta_data_before_sharing_title">Elimine los metadatos sensibles antes de compartirlos</string>
     <string name="default_mute_title">Silenciar el vídeo por defecto</string>
@@ -206,15 +200,9 @@
     <string name="option_menu_name_filter">Filtrar por nombre</string>
     <string name="hidden_albums">Álbumes ocultos:</string>
     <string name="item_unhide">Deshacer</string>
-    <string name="button_text_scan">Escanear la contraseña</string>
     <string name="option_menu_map_slideshow">Presentación de diapositivas</string>
-    <string name="backup_exif_location_permission_rationale">Para hacer una copia de seguridad de los datos GPS guardados en la foto</string>
-    <string name="search_exif_location_permission_rationale">Para buscar información de localización en la galería</string>
-    <string name="read_exif_location_permission_rationale">Para mostrar la información de ubicación de las fotos</string>
-    <string name="need_access_media_location_permission">, Les Pas necesita el permiso de acceso a la ubicación de los medios de comunicación.</string>
     <string name="unlock_please">Desbloquear álbumes ocultos</string>
     <string name="item_bgm">Gestionar la BGM</string>
-    <string name="option_menu_mute">Activar el silencio</string>
     <string name="skip_late_night_update">Omitir la actualización nocturna</string>
     <string name="not_hiding">Los siguientes nombres ya existían en la lista de álbumes ocultos: %1$s</string>
     <string name="default_sort_order_title">Ordenación de las fotos por defecto para el nuevo álbum</string>
@@ -222,8 +210,6 @@
     <string name="msg_set_as_local">Al configurar el álbum como \"Local\" se descargarán todos los archivos multimedia del servidor, por lo que tardará un poco. ¿Cómo proceder?</string>
     <string name="action_set_remote">Ajustar como Remoto</string>
     <string name="action_set_local">Ajustar como Local</string>
-    <string name="msg_check_network">Compruebe la conexión de su servidor.</string>
-    <string name="msg_error_preparing_share_out_files">No preparar los archivos multimedia.</string>
     <string name="to_new_album">Al nuevo álbum:</string>
     <string name="clear_cache_title">Borrar la caché de los álbumes remotos</string>
     <string name="msg_clear_cache">Todos los archivos de imagen remotos serán eliminados de la caché. ¿Proceder?</string>
@@ -239,7 +225,6 @@
     <string name="chinese_map_title">Utilizar la aplicación de mapas chinos</string>
     <string name="chinese_map_summary">Todas las aplicaciones de mapas de China utilizan un único sistema de coordenadas.</string>
     <string name="map_header">Mapa</string>
-    <string name="msg_server_operation">Las fotos aparecerán en el álbum de destino después de la sincronización con el servidor.</string>
     <string name="item_wide_list">Mostrar nombre</string>
     <string name="action_export">Exportar</string>
     <string name="action_rename_media">Renombrar</string>
@@ -247,7 +232,6 @@
     <string name="nearby_convergence_title">Convergencia automática de fotos cercanas</string>
     <string name="nearby_convergence_summary">Al reproducir el pase de diapositivas en el mapa, las fotos convergen en la más cercana que tenga coordenadas GPS.</string>
     <string name="true_black_title">Tema negro verdadero</string>
-    <string name="tooltips_fetch_backup">Mostrar las copias de seguridad en el servidor</string>
     <string name="tooltips_enable_backup">Activar copia de seguridad</string>
     <string name="tooltips_backup_setting">Configuración de la copia de seguridad</string>
     <string name="msg_archive_empty">Archivo vacío hasta que empiece la copia de seguridad de su galería.</string>
@@ -263,12 +247,10 @@
     <string name="sync_status_action_delete_media">Eliminando %1$s en el álbum \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Eliminando el álbum \'%s\'</string>
     <string name="sync_status_action_add_media">Añadiendo %1$s al álbum \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Añadiendo el álbum \'%s\'</string>
     <string name="sync_status_action_rename_album">Cambiando el nombre del álbum \'%1$s a \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Ocultación del álbum \'%s\'</string>
     <string name="sync_status_action_unhide_album">Desocultando el álbum \'%s\'</string>
     <string name="sync_status_action_update_file">Actualizando %1$s en el álbum \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Actualizando la portada del álbum \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Añadiendo %1$s al álbum conjunto \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Actualizando los metadatos del álbum conjunto \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Actualizando los metadatos del álbum \'%s\'</string>
@@ -336,7 +318,6 @@
     <string name="msg_invalid_gpx_file">%1$s no es válido o no se ha encontrado ninguna marca de tiempo.</string>
     <string name="suffix_gpx_offset">mins de diferencia permitidos</string>
     <string name="item_export_gpx">Exportar GPX</string>
-    <string name="checkbox_text_dst">Corrección DST</string>
     <string name="hint_gpx_export_file_location">El archivo se guardará en la carpeta \"Download\".</string>
     <string name="trash_name">Papelera</string>
     <string name="gallery_backup_option_dialog_title">Configuración de \'%1$s</string>

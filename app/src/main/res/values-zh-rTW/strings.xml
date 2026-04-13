@@ -19,8 +19,6 @@
     <string name="app_name">Les Pas</string>
     <string name="welcome_message_title">Les Pas歡迎您!</string>
     <string name="welcome_message">請登錄您的Nextcloud伺服器進行授權。</string>
-    <string name="host_textinput_label">伺服器網址</string>
-    <string name="url_helper_text">例如：https://example.com/nextcloud</string>
     <string name="msg_install_qrcode_scanner">請先安裝一個兼容的二維碼掃描器App。如%1$sF-Droid上的SecScanQR</string>
     <string name="host_address_validation_error">網址不正確</string>
     <string name="host_not_valid">伺服器未回應 (%1$d)</string>
@@ -129,15 +127,12 @@
     <string name="camera_roll_name">相機</string>
     <string name="msg_remove_old_files_warning">警告：如果您在首次啟用本資料夾備份時選擇了不備份現有檔案，那麼啟用此自動削除設定後，那些現有檔案也將被按設定削除！</string>
     <string name="button_text_i_understand">瞭解了</string>
-    <string name="checkbox_text_remove_archive_too">同時刪除伺服器存檔中的備份副本</string>
     <string name="checkbox_text_remove_archive_copy">伺服器上的備份副本</string>
     <string name="button_text_grant">授予許可權</string>
     <string name="tooltips_search_album">在相冊中搜索</string>
     <string name="tooltips_search_gallery">在圖庫中搜索</string>
     <string name="title_in_album">相冊中的%1$s</string>
     <string name="title_in_gallery">圖庫中的%1$s</string>
-    <string name="button_text_leave">退出</string>
-    <string name="condition_to_perform_search">需要存在有相冊或授予了存儲訪問權限，才能使用圖片搜索功能。</string>
     <string name="need_albums">請先創建相冊。</string>
     <string name="to_album">至相冊：</string>
     <string name="move_files">移動</string>
@@ -182,7 +177,6 @@
     <string name="relogin_title">重新登入</string>
     <string name="relogin_summary">假如你在伺服器端意外撤銷了Les Pas的應用授權。</string>
     <string name="auto_replay_title">自動重複播放影片</string>
-    <string name="button_text_download">下載</string>
     <string name="button_text_add_to_lespas">加入相冊</string>
     <string name="remove_meta_data_before_sharing_title">分享前刪除圖片隱私後設資料</string>
     <string name="default_mute_title">預設影片靜音</string>
@@ -203,15 +197,9 @@
     <string name="option_menu_name_filter">按名檢索</string>
     <string name="hidden_albums">已隱藏相冊：</string>
     <string name="item_unhide">重現</string>
-    <string name="button_text_scan">掃描應用密碼</string>
     <string name="option_menu_map_slideshow">自動輪播</string>
-    <string name="backup_exif_location_permission_rationale">為了備份照片地理資訊</string>
-    <string name="search_exif_location_permission_rationale">在圖庫中搜索位置信息</string>
-    <string name="read_exif_location_permission_rationale">為了檢視照片地理資訊</string>
-    <string name="need_access_media_location_permission">，Les Pas需要獲得讀取媒體地理資訊權限。</string>
     <string name="unlock_please">解鎖隱藏相冊</string>
     <string name="item_bgm">背景音樂</string>
-    <string name="option_menu_mute">切換靜音</string>
     <string name="skip_late_night_update">不在深夜刷新</string>
     <string name="not_hiding">隱藏相冊表里已有以下相冊：%1$s</string>
     <string name="default_sort_order_title">新建相冊相片排序規則</string>
@@ -219,8 +207,6 @@
     <string name="msg_set_as_local">相冊設置為「本地相冊」後，該相冊的媒體檔案將從伺服器下載到本機，繼續操作嗎？</string>
     <string name="action_set_remote">設為遠端相冊</string>
     <string name="action_set_local">設為本地相冊</string>
-    <string name="msg_error_preparing_share_out_files">無法載入媒體檔案。</string>
-    <string name="msg_check_network">請檢查與伺服器的連結 。</string>
     <string name="to_new_album">至新相冊：</string>
     <string name="clear_cache_title">清空遠端相冊圖片快取</string>
     <string name="msg_clear_cache">將清空遠端相冊圖片快取，繼續嗎？</string>
@@ -236,7 +222,6 @@
     <string name="chinese_map_title">使用中國大陸地圖App</string>
     <string name="chinese_map_summary">中國大陸地圖App採用獨特坐標系統。</string>
     <string name="map_header">地圖</string>
-    <string name="msg_server_operation">與伺服器實現同步後，照片才會在目標相冊中出現。</string>
     <string name="item_wide_list">顯示名稱</string>
     <string name="action_export">匯出</string>
     <string name="action_rename_media">改名</string>
@@ -244,7 +229,6 @@
     <string name="nearby_convergence_title">自動歸集附近照片</string>
     <string name="nearby_convergence_summary">在地圖上播放旅程時，自動將照片歸集到附近的有GPS坐標的照片上。</string>
     <string name="true_black_title">採用暗黑深色主题</string>
-    <string name="tooltips_fetch_backup">列示伺服器上的備份</string>
     <string name="tooltips_enable_backup">備份開關</string>
     <string name="tooltips_backup_setting">備份設定</string>
     <string name="msg_archive_empty">存檔為空，請開始備份相簿。</string>
@@ -260,12 +244,10 @@
     <string name="sync_status_action_delete_media">正在消去相簿《%2$s》中的照片%1$s</string>
     <string name="sync_status_action_delete_album">正在消去相簿《%s》</string>
     <string name="sync_status_action_add_media">正在新增%1$s到相簿《%2$s》中</string>
-    <string name="sync_status_action_add_album">正在建立相簿《%s》</string>
     <string name="sync_status_action_rename_album">正在將相簿《%1$s》改名為《%2$s》</string>
     <string name="sync_status_action_hide_album">正在隱藏相簿《%s》</string>
     <string name="sync_status_action_unhide_album">正在解除隱藏相簿《%s》</string>
     <string name="sync_status_action_update_file">正在更新相簿《%2$s》中的%1$s</string>
-    <string name="sync_status_action_update_album_cover">正在更新相簿《%s》的封面</string>
     <string name="sync_status_action_add_media_to_joint_album">正在將 %1$s 新增到合作相簿《%2$s》中</string>
     <string name="sync_status_action_update_joint_album_meta">正在更新合作相簿《%s》的後設資料</string>
     <string name="sync_status_action_update_album_meta">正在更新相簿《%s》的後設資料</string>
@@ -331,7 +313,6 @@
     <string name="msg_invalid_gpx_file">%1$s無效，或其中沒有找到時間戳!</string>
     <string name="suffix_gpx_offset">分鐘時間差</string>
     <string name="item_export_gpx">匯出GPX</string>
-    <string name="checkbox_text_dst">夏令時修正</string>
     <string name="hint_gpx_export_file_location">檔案將被儲存在 \"Download\"資料夾中。</string>
     <string name="trash_name">回收站</string>
     <string name="gallery_backup_option_dialog_title">\'%1$s\'的選項</string>

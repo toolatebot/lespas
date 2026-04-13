@@ -28,9 +28,6 @@
     <!-- NCLogin fragment -->
     <string name="welcome_message_title">Welcome to Les Pas!</string>
     <string name="welcome_message">To get started, please grant access on your Nextcloud server.</string>
-    <string name="button_text_scan">Scan App Password</string>
-    <string name="host_textinput_label">Server address</string>
-    <string name="url_helper_text">e.g. https://example.com/nextcloud</string>
     <string name="http_toggle_helper_text">\u2B11Touch prefix to toggle unsecure HTTP</string>
     <string name="nextcloud_credential_scheme" translatable="false">nc</string>
     <string name="account_type_nc" translatable="false">site.leos.apps.lespas.nc</string>
@@ -102,9 +99,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="preparing_shares">Preparing shares…</string>
-    <string name="msg_error_preparing_share_out_files">Fail to prepare media files.</string>
-    <string name="msg_check_network">Check your server connection.</string>
-    <string name="msg_server_operation">Photos will appear in target album after synchronizing with server.</string>
     <string name="msg_saved_location">Photos will be saved in \'Download\' folder.</string>
     <string name="option_menu_search">Search for name</string>
     <string name="option_menu_slideshow">Slideshow</string>
@@ -234,10 +228,6 @@
     <string name="blog_name_default">My Albums</string>
     <string name="blog_exemption_clause">You’re responsible for your use of the blogging feature and any content you provide, including compliance with applicable laws. Please don’t post content unless you have the right to do so. Anything you post in the blog CAN be access by the general public.</string>
 
-    <string name="backup_exif_location_permission_rationale">To backup GPS data saved in photo</string>
-    <string name="search_exif_location_permission_rationale">To search for location information in gallery</string>
-    <string name="read_exif_location_permission_rationale">To show location information of photos</string>
-    <string name="need_access_media_location_permission">, Les Pas needs Access Media Location permission.</string>
     <string name="proceed_request">Proceed</string>
 
     <!-- Sync Status Dialog Fragment -->
@@ -248,12 +238,10 @@
     <string name="sync_status_action_delete_media">Removing %1$s in album \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Removing album \'%s\'</string>
     <string name="sync_status_action_add_media">Adding %1$s to album \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Adding album \'%s\'</string>
     <string name="sync_status_action_rename_album">Renaming album \'%1$s\ to \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Hiding album \'%s\'</string>
     <string name="sync_status_action_unhide_album">Un-hiding album \'%s\'</string>
     <string name="sync_status_action_update_file">Updating %1$s in album \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Updating cover of album \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Adding %1$s to joint album \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Updating meta data of joint album \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Updating meta data of album \'%s\'</string>
@@ -369,7 +357,6 @@
     </plurals>
 
     <!-- Gallery Fragment -->
-    <string name="tooltips_fetch_backup">Show backups on server</string>
     <string name="tooltips_date_picker">Pick a date</string>
     <string name="tooltips_enable_backup">Enable backup</string>
     <string name="tooltips_backup_setting">Backup setting</string>
@@ -397,7 +384,6 @@
     <string name="msg_remove_old_files_warning">WARNING: If you chose not to backup existing files when you first enabled backup for this folder, those existing files WILL ALSO BE REMOVED by turning on this setting!</string>
     <string name="button_text_i_understand">I understand</string>
     <string name="confirm_empty_trash">Are you sure you want to empty the trash?</string>
-    <string name="checkbox_text_remove_archive_too">Also delete backup copy in server archive</string>
     <string name="checkbox_text_remove_local_copy">Local copy in this device</string>
     <string name="checkbox_text_remove_archive_copy">Archived copy on server</string>
     <string name="msg_media_manager_rationale_for_deletion">To avoid system confirmation of deletion, you need to grant Les Pas the Manage Media permission.</string>
@@ -406,8 +392,6 @@
     <!-- Search Fragment -->
     <string name="tooltips_search_album">Search in albums</string>
     <string name="tooltips_search_gallery">Search in Gallery</string>
-    <string name="condition_to_perform_search">There must be at least one existing album OR storage access permission in order to search.</string>
-    <string name="button_text_leave">Leave</string>
     <string name="need_albums">Please create an album first.</string>
 
     <!-- Search Result Fragment -->
@@ -420,12 +404,10 @@
     <string name="yes_i_do">Sure</string>
 
     <!-- Publication Detail Fragment -->
-    <string name="publication_detail_fragment_title" translatable="false">"%1$s  |  %2$s"</string>
     <string name="item_show_meta">Show meta</string>
     <string name="item_refresh_publication">Refresh publications</string>
 
     <!-- Remote Media Fragment -->
-    <string name="button_text_download">Download</string>
     <string name="button_text_add_to_lespas">Add to album</string>
 
     <!-- Location Search Fragment -->
@@ -433,7 +415,6 @@
 
     <!-- Photo in Map Fragment -->
     <string name="option_menu_map_slideshow">Slideshow</string>
-    <string name="option_menu_mute">Toggle mute</string>
 
     <!-- Blog Dialog Fragment -->
     <string name="button_text_post_blog">Post</string>
@@ -468,7 +449,6 @@
 
     <!-- GPX -->
     <string name="checkbox_text_overwrite">Overwrite existing location data</string>
-    <string name="checkbox_text_dst">DST correction</string>
     <string name="button_text_tag">Geotag</string>
     <string name="msg_invalid_gpx_file">%1$s is invalid, or no timestamp found!</string>
     <string name="suffix_gpx_offset">mins difference allowed</string>
