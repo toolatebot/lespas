@@ -253,9 +253,12 @@ class GallerySlideFragment : Fragment() {
         }
 
         view.findViewById<ImageButton>(R.id.info_button).setOnClickListener {
-            if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) mediaAdapter.getPhotoAt(mediaViewPager.currentItem).let { remotePhoto ->
-                val isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
-                (if (mediaAdapter.isPhotoAtLocal(mediaViewPager.currentItem)) MetaDataDialogFragment.newInstance(remotePhoto.photo, isHDR = isHDR) else MetaDataDialogFragment.newInstance(remotePhoto, hasSizeInfo = true, isHDR = isHDR)).show(parentFragmentManager, INFO_DIALOG)
+            if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) {
+                MetaDataDialogFragment.newInstance(
+                    media = mediaAdapter.getPhotoAt(mediaViewPager.currentItem),
+                    hasSizeInfo = mediaAdapter.getGalleryMediaAt(mediaViewPager.currentItem).isRemote(),
+                    isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                ).show(parentFragmentManager, INFO_DIALOG)
             }
         }
         removeButton = view.findViewById<ImageButton>(R.id.remove_button).apply {
@@ -488,9 +491,8 @@ class GallerySlideFragment : Fragment() {
         }
         override fun isMotionPhoto(position: Int): Boolean = Tools.isMotionPhoto(getItem(position).media.photo.shareId)
 
-        fun isPhotoAtLocal(position: Int): Boolean = !currentList[position].isRemote()
-        fun getPhotoAt(position: Int): NCShareViewModel.RemotePhoto = currentList[position].media
         fun getGalleryMediaAt(position: Int): GalleryFragment.GalleryMedia = currentList[position]
+        fun getPhotoAt(position: Int): NCShareViewModel.RemotePhoto = currentList[position].media
     }
 
     class SliderMediaDiffCallback : DiffUtil.ItemCallback<GalleryFragment.GalleryMedia>() {

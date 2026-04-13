@@ -91,7 +91,6 @@ class MetaDataDialogFragment : LesPasDialogFragment(R.layout.fragment_info_dialo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requireArguments().parcelable<Photo>(KEY_MEDIA)?.let { remotePhoto = NCShareViewModel.RemotePhoto(it, "") }
         requireArguments().parcelable<NCShareViewModel.RemotePhoto>(KEY_REMOTE_MEDIA)?.let { remotePhoto = it }
         exifModel = ViewModelProvider(this, ExifModelFactory(requireActivity(), remotePhoto))[ExifModel::class.java]
     }
@@ -408,18 +407,9 @@ class MetaDataDialogFragment : LesPasDialogFragment(R.layout.fragment_info_dialo
     )
 
     companion object {
-        const val KEY_MEDIA = "KEY_MEDIA"
         const val KEY_REMOTE_MEDIA = "KEY_REMOTE_MEDIA"
         private const val KEY_HAS_SIZE_INFO = "KEY_HAS_SIZE_INFO"
         private const val KEY_IS_HDR = "KEY_IS_HDR"
-
-        @JvmStatic
-        fun newInstance(media: Photo, isHDR: Boolean = false) = MetaDataDialogFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(KEY_MEDIA, media)
-                putBoolean(KEY_IS_HDR, isHDR)
-            }
-        }
 
         @JvmStatic
         fun newInstance(media: NCShareViewModel.RemotePhoto, hasSizeInfo: Boolean = false, isHDR: Boolean = false) = MetaDataDialogFragment().apply {
