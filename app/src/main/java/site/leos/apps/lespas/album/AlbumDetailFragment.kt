@@ -1228,7 +1228,6 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
         private var panoramaMark: Drawable? = null
 
         inner class CoverViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private var currentCover = Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)
             private val ivCover = itemView.findViewById<ImageView>(R.id.photo)
             private val tvTitle = itemView.findViewById<TextView>(R.id.title).apply { setOnClickListener { titleClickListener() }}
             private val tvDuration = itemView.findViewById<TextView>(R.id.duration)
@@ -1236,14 +1235,13 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
             private val tvRecipients = itemView.findViewById<TextView>(R.id.recipients)
             private val titleDrawableSize = tvTitle.textSize.toInt()
 
-            fun bindViewItem(cover: Photo) {
+            fun bindViewItem(cover: Photo, payloads: MutableList<Any> = mutableListOf()) {
                 with(itemView) {
-                    if (currentCover.name != cover.name || currentCover.eTag != cover.eTag || currentCover.bearing != cover.bearing) {
-                        imageLoader(cover.copy(id = album.cover), ivCover, NCShareViewModel.TYPE_COVER)
-                        currentCover = cover
-                    }
+                    val payload = if (payloads.isEmpty()) 0 else payloads.first()
 
-                    tvTitle.apply {
+                    if (payload == 0 || payload == PhotoDiffCallback.COVER_PICTURE_CHANGED) imageLoader(cover.copy(id = album.cover), ivCover, NCShareViewModel.TYPE_COVER)
+
+                    if (payload == 0 || payload == PhotoDiffCallback.ALBUM_NAME_CHANGED) tvTitle.apply {
                         text = album.name
 
                         setCompoundDrawables(
@@ -1267,16 +1265,18 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                         else -> resources.getString(R.string.duration_years, days / 365)
                     }
 
-                    tvTotal.text = resources.getString(R.string.total_photo, currentList.size - 1)
+                    if (payload == 0 || payload == PhotoDiffCallback.ALBUM_SIZE_CHANGED) tvTotal.text = resources.getString(R.string.total_photo, currentList.size - 1)
 
-                    if (recipients.isNotEmpty()) {
-                        var names = recipients[0].sharee.label
-                        for (i in 1 until recipients.size) names += ", ${recipients[i].sharee.label}"
-                        tvRecipients.apply {
-                            text = String.format(recipientText, names)
-                            visibility = View.VISIBLE
-                        }
-                    } else tvRecipients.visibility = View.GONE
+                    if (payload == 0 || payload == PhotoDiffCallback.PUBLISHING_STATE_CHANGED) {
+                        if (recipients.isNotEmpty()) {
+                            var names = recipients[0].sharee.label
+                            for (i in 1 until recipients.size) names += ", ${recipients[i].sharee.label}"
+                            tvRecipients.apply {
+                                text = String.format(recipientText, names)
+                                visibility = View.VISIBLE
+                            }
+                        } else tvRecipients.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -1349,6 +1349,11 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
             else (holder as CoverViewHolder).bindViewItem(currentList.first())  // List will never be empty, no need to check for NoSuchElementException
         }
 
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+            if (payloads.isEmpty()) onBindViewHolder(holder, position)
+            else if (holder is CoverViewHolder) holder.bindViewItem(currentList.first(), payloads) else (holder as PhotoViewHolder).bindViewItem(currentList[position])
+        }
+
         override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
             for (i in 0 until currentList.size) {
                 recyclerView.findViewHolderForAdapterPosition(i)?.let { holder -> holder.itemView.findViewById<View>(R.id.photo)?.let { cancelLoader(it) }}
@@ -1383,7 +1388,10 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
         //internal fun getRecipient(): List<NCShareViewModel.Recipient> = recipients
         internal fun setRecipient(share: NCShareViewModel.ShareByMe) {
             this.recipients = share.with
-            notifyItemChanged(0)
+            if (currentList.isNotEmpty()) {
+                currentList.first().shareId++
+                notifyItemChanged(0, PhotoDiffCallback.PUBLISHING_STATE_CHANGED)
+            }
         }
 
         internal fun setOverlayDrawable(playMark: Drawable, selectedMark: Drawable, panoramaMark: Drawable) {
@@ -1394,7 +1402,6 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
 
         internal fun getPhotoAt(position: Int): Photo = currentList[position]
         internal fun getPhotoBy(photoId: String): Photo? = try { currentList.last { it.id == photoId }} catch (_: NoSuchElementException) { null }
-        //internal fun updateCover() { notifyItemChanged(0) }
 
         internal fun setSelectionTracker(selectionTracker: SelectionTracker<String>) { this.selectionTracker = selectionTracker }
         internal fun getPhotoId(position: Int): String = currentList[position].id
@@ -1437,8 +1444,25 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
     class PhotoDiffCallback(private val albumId: String): DiffUtil.ItemCallback<Photo>() {
         override fun areItemsTheSame(oldItem: Photo, newItem: Photo): Boolean = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Photo, newItem: Photo): Boolean =
-            if (oldItem.id == albumId) oldItem.name == newItem.name && oldItem.eTag == newItem.eTag && oldItem.bearing == newItem.bearing && oldItem.albumId == newItem.albumId && oldItem.caption == newItem.caption
+            if (oldItem.id == albumId) oldItem.name == newItem.name && oldItem.eTag == newItem.eTag && oldItem.bearing == newItem.bearing && oldItem.albumId == newItem.albumId && oldItem.caption == newItem.caption && oldItem.shareId == newItem.shareId
             else oldItem.name == newItem.name && oldItem.eTag == newItem.eTag
+        override fun getChangePayload(oldItem: Photo, newItem: Photo): Any? {
+            return when {
+                oldItem.id != albumId -> null
+                oldItem.bearing != newItem.bearing || oldItem.name != newItem.name || oldItem.eTag != newItem.eTag -> COVER_PICTURE_CHANGED
+                oldItem.albumId != newItem.albumId -> ALBUM_NAME_CHANGED
+                oldItem.caption != newItem.caption -> ALBUM_SIZE_CHANGED
+                oldItem.shareId != newItem.shareId -> PUBLISHING_STATE_CHANGED
+                else -> null
+            }
+        }
+
+        companion object {
+            const val COVER_PICTURE_CHANGED = 1
+            const val ALBUM_NAME_CHANGED = 2
+            const val ALBUM_SIZE_CHANGED = 3
+            const val PUBLISHING_STATE_CHANGED = 4
+        }
     }
 
     companion object {
