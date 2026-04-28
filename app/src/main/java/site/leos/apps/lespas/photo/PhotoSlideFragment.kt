@@ -443,11 +443,10 @@ class PhotoSlideFragment : Fragment() {
                 handlerBottomControl.post(hideBottomControls)
 
                 if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) with(pAdapter.getPhotoAt(slider.currentItem)) {
-                    val isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
-                    if (isRemote && eTag != Photo.ETAG_NOT_YET_UPLOADED)
-                        MetaDataDialogFragment.newInstance(NCShareViewModel.RemotePhoto(this, serverPath), isHDR = isHDR).show(parentFragmentManager, INFO_DIALOG)
-                    else
-                        MetaDataDialogFragment.newInstance(this, isHDR = isHDR).show(parentFragmentManager, INFO_DIALOG)
+                    MetaDataDialogFragment.newInstance(
+                        NCShareViewModel.RemotePhoto(this, if (isRemote && eTag != Photo.ETAG_NOT_YET_UPLOADED) serverPath else ""),
+                        isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                    ).show(parentFragmentManager, INFO_DIALOG)
                 }
             }
         }

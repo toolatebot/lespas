@@ -27,8 +27,6 @@
     <string name="error_only_one_account">同一サーバー上では1つのアカウントしか使用できない</string>
     <string name="welcome_message_title">Les Pasはあなたを歓迎します。</string>
     <string name="welcome_message">アプリケーション認証のために、Nextcloudサーバーにログインしてください。</string>
-    <string name="host_textinput_label">サーバーURL</string>
-    <string name="url_helper_text">例： https://example.com/nextcloud</string>
     <string name="verify_ssl_certificate_title">SSL証明書の検証に失敗しました。</string>
     <string name="untrusted_ssl_certificate_message">主体者:\n%1$s\n\n発行者:\n%2$s\n\nSHA-256指紋:\n%3$s\n\n有効期間開始: %4$s\n\n有効期間満了: %5$s\n\n\nこのサーバーを信用しますか？</string>
     <string name="accept_certificate">信頼</string>
@@ -142,13 +140,10 @@
     <string name="camera_roll_name">カメラ</string>
     <string name="msg_remove_old_files_warning">警告：このフォルダのバックアップを最初に有効にしたときに、既存のファイルをバックアップしないことを選択した場合、この設定をオンにすると、既存のファイルも削除されます！</string>
     <string name="button_text_i_understand">なんでも</string>
-    <string name="checkbox_text_remove_archive_too">サーバーアーカイブのバックアップコピーも削除</string>
     <string name="checkbox_text_remove_archive_copy">サーバー上のアーカイブ</string>
     <string name="button_text_grant">権限の付与</string>
     <string name="tooltips_search_album">アルバム内検索</string>
     <string name="tooltips_search_gallery">ギャラリー内検索</string>
-    <string name="condition_to_perform_search">画像検索機能を利用するためには、アルバムが存在するか、ストレージへのアクセスが許可されている必要があります。</string>
-    <string name="button_text_leave">出口</string>
     <string name="need_albums">まずはアルバムを作成してください。</string>
     <string name="title_in_album">アルバム内の %1$s</string>
     <string name="title_in_gallery">ギャラリーの %1$s</string>
@@ -182,7 +177,6 @@
     <string name="relogin_title">再ログイン</string>
     <string name="relogin_summary">誤ってサーバー上のLes Pasのアクセスキーを失効させてしまった場合。</string>
     <string name="auto_replay_title">ビデオを自動的に再生する</string>
-    <string name="button_text_download">ダウンロード</string>
     <string name="button_text_add_to_lespas">アルバムに追加</string>
     <string name="remove_meta_data_before_sharing_title">共有前に画像のプライバシー・メタデータを削除する</string>
     <string name="default_mute_title">デフォルトのビデオミュート</string>
@@ -205,15 +199,9 @@
     <string name="option_menu_name_filter">名前から探す</string>
     <string name="hidden_albums">隠れたアルバム</string>
     <string name="item_unhide">公開</string>
-    <string name="button_text_scan">スキャンアプリのパスワード</string>
     <string name="option_menu_map_slideshow">スライドショー</string>
-    <string name="backup_exif_location_permission_rationale">写真に保存されたGPSデータをバックアップするには</string>
-    <string name="search_exif_location_permission_rationale">Per cercare informazioni sulla posizione nella galleria</string>
-    <string name="read_exif_location_permission_rationale">写真の位置情報を表示する</string>
-    <string name="need_access_media_location_permission">Les Pasは、Access Media Locationの許可を必要とします。</string>
     <string name="unlock_please">隠しアルバムを解除する</string>
     <string name="item_bgm">BGMの管理</string>
-    <string name="option_menu_mute">トグルミュート</string>
     <string name="skip_late_night_update">深夜に更新をスキップ</string>
     <string name="not_hiding">以下の名前はすでに隠しアルバムリストに存在しています： %1$s</string>
     <string name="default_sort_order_title">新規アルバムでの写真のデフォルトの並び順</string>
@@ -221,8 +209,6 @@
     <string name="msg_set_as_local">アルバムを「ローカル」に設定すると、サーバーからすべてのメディアファイルをダウンロードするため、しばらく時間がかかります。続行しますか？</string>
     <string name="action_set_remote">リモート設定</string>
     <string name="action_set_local">ローカルに設定</string>
-    <string name="msg_check_network">サーバーの接続を確認してください。</string>
-    <string name="msg_error_preparing_share_out_files">メディアファイルの準備に失敗する。</string>
     <string name="to_new_album">ニューアルバムへ</string>
     <string name="clear_cache_title">リモートアルバムのキャッシュをクリアする</string>
     <string name="msg_clear_cache">すべてのリモートイメージファイルがキャッシュから削除されます。続行しますか？</string>
@@ -238,7 +224,6 @@
     <string name="chinese_map_title">中国語の地図アプリを使う</string>
     <string name="chinese_map_summary">中国の地図アプリは、すべて独自の座標系を使用しています。</string>
     <string name="map_header">地図</string>
-    <string name="msg_server_operation">サーバーと同期した後、ターゲットアルバムに写真が表示されます。</string>
     <string name="item_wide_list">名前を表示</string>
     <string name="action_export">導く</string>
     <string name="action_rename_media">リネーム</string>
@@ -246,7 +231,6 @@
     <string name="nearby_convergence_title">近くの写真を自動収束</string>
     <string name="nearby_convergence_summary">地図上でスライドショーを再生すると、GPS座標を持つ近くの写真に収束します。</string>
     <string name="true_black_title">トゥルーブラックダークテーマ</string>
-    <string name="tooltips_fetch_backup">サーバー上のバックアップを表示</string>
     <string name="tooltips_enable_backup">バックアップを有効にする</string>
     <string name="tooltips_backup_setting">バックアップの設定</string>
     <string name="msg_archive_empty">ギャラリーのバックアップを開始してください。</string>
@@ -262,12 +246,10 @@
     <string name="sync_status_action_delete_media">アルバム『%2$s』内の写真%1$sを削除しています</string>
     <string name="sync_status_action_delete_album">アルバム『%s』は削除されています</string>
     <string name="sync_status_action_add_media">アルバム『%2$s』に%1$sを追加しました</string>
-    <string name="sync_status_action_add_album">アルバム『%s』を追加しています</string>
     <string name="sync_status_action_rename_album">アルバム『%1$s』は『%2$s』に名前が変更されました</string>
     <string name="sync_status_action_hide_album">アルバム『%s』は非表示になっています</string>
     <string name="sync_status_action_unhide_album">非表示のアルバム『%s』が非表示にされています</string>
     <string name="sync_status_action_update_file">アルバム『%2$s』の %1$s を更新しています</string>
-    <string name="sync_status_action_update_album_cover">アルバム『%s』の表紙を更新しています</string>
     <string name="sync_status_action_add_media_to_joint_album">コラボアルバム『%2$s』に%1$sを追加しました</string>
     <string name="sync_status_action_update_joint_album_meta">ジョイント・アルバム『%s』のメタ・データを更新しています</string>
     <string name="sync_status_action_update_album_meta">アルバム『%s』のメタデータを更新しています</string>
@@ -334,7 +316,6 @@
     <string name="msg_invalid_gpx_file">%1$s が無効か、タイムスタンプが見つかりませんでした!</string>
     <string name="suffix_gpx_offset">分単位の時差</string>
     <string name="item_export_gpx">GPXのエクスポート</string>
-    <string name="checkbox_text_dst">夏時間補正</string>
     <string name="hint_gpx_export_file_location">ファイルは「Download」フォルダに保存されます。</string>
     <string name="trash_name">ゴミ箱</string>
     <string name="gallery_backup_option_dialog_title">\'%1$s\'の設定</string>

@@ -31,9 +31,6 @@
     <!-- NCLogin fragment -->
     <string name="welcome_message_title">Ti diamo il benvenuto su Les Pas!</string>
     <string name="welcome_message">Per iniziare, consenti l\'accesso sul tuo server Nextcloud.</string>
-    <string name="button_text_scan">Scannerizza password</string>
-    <string name="host_textinput_label">Indirizzo del server</string>
-    <string name="url_helper_text">per esempio: https://example.com/nextcloud</string>
     <string name="http_toggle_helper_text">\u2B11Per attivare l\'HTTP non sicuro, tocca il prefisso</string>
     <string name="verify_ssl_certificate_title">Certificato SSL non valido</string>
     <string name="verify_ssl_certificate_message">Il certificato del server %1$s NON PUÒ essere verificato, vuoi fidarti del server e continuare\?</string>
@@ -82,9 +79,6 @@
     <string name="yes">Sì</string>
     <string name="no">No</string>
     <string name="preparing_shares">Preparazione dei file per la condivisione in corso…</string> <!-- length -->
-    <string name="msg_error_preparing_share_out_files">La preparazione dei file non è andata a buon fine.</string>
-    <string name="msg_check_network">Verifica la connessione al server.</string>
-    <string name="msg_server_operation">Le foto appariranno nell\'album di destinazione dopo la sincronizzazione con il server.</string>
 
     <!-- PhotoSlide fragment -->
     <string name="option_menu_slideshow">Presentazione</string>
@@ -166,10 +160,6 @@
     <string name="msg_logout_dialog">Uscire dall\'account %1$s\?</string>
     <string name="yes_logout">Sì, esci</string>
 
-    <string name="backup_exif_location_permission_rationale">Per effettuare il backup dei dati GPS delle foto</string>
-    <string name="search_exif_location_permission_rationale">Per cercare informazioni sulla posizione nella galleria</string>
-    <string name="read_exif_location_permission_rationale">Per visualizzare le informazioni di geolocalizzazione delle foto</string>
-    <string name="need_access_media_location_permission">, Les Pas ha bisogno del permesso di accesso alla posizione.</string>
     <string name="proceed_request">Continua</string>
 
     <!-- Destination DialogFragment -->
@@ -259,13 +249,10 @@
     <string name="camera_roll_name">Macchina fotografica</string>
     <string name="msg_remove_old_files_warning">AVVERTENZA: se si è scelto di non eseguire il backup dei file esistenti quando si è abilitato il backup per questa cartella, i file esistenti verranno rimossi anche attivando questa impostazione!</string>
     <string name="button_text_i_understand">Capisco</string>
-    <string name="checkbox_text_remove_archive_too">Eliminare anche la copia di backup nell\'archivio del server</string>
     <string name="checkbox_text_remove_archive_copy">La copia dell\'archivio sul server</string>
     <string name="button_text_grant">Autorizzare</string>
     <string name="tooltips_search_album">Cerca negli album</string>
     <string name="tooltips_search_gallery">Ricerca nella galleria</string>
-    <string name="condition_to_perform_search">Per effettuare una ricerca è necessario almeno un album o il permesso di accesso all\'archivio.</string>
-    <string name="button_text_leave">Esci</string>
     <string name="need_albums">Prima crea un album.</string>
 
     <!-- Search Result Fragment -->
@@ -282,7 +269,6 @@
     <string name="item_refresh_publication">Aggiorna pubblicazioni</string>
 
     <!-- Remote Media Fragment -->
-    <string name="button_text_download">Scarica</string>
     <string name="button_text_add_to_lespas">Aggiungi all\'album</string>
 
     <!-- Location Search Fragment -->
@@ -290,7 +276,6 @@
 
     <!-- Photo in Map Fragment -->
     <string name="option_menu_map_slideshow">Presentazione</string>
-    <string name="option_menu_mute">Attiva muto</string>
 
     <!-- Image Recognition -->
     <!-- Object label -->
@@ -319,7 +304,6 @@
     <string name="msg_joint_album_not_updated_locally">Le modifiche apportate all\'album comune saranno visualizzate dopo la conferma del proprietario dell\'album.</string>
     <string name="option_menu_search">Ricerca per nome</string>
     <string name="tooltips_date_picker">Scegliere una data</string>
-    <string name="tooltips_fetch_backup">Mostra i backup sul server</string>
     <string name="should_allow_launching_other_app">Consentire l\'avvio di Les Pas ad altre applicazioni nelle impostazioni di sicurezza.</string>
     <string name="msg_low_storage_space">Lo spazio di archiviazione interno è inferiore al 10%, il che impedisce a Les Pas di sincronizzarsi con il server.</string>
     <string name="msg_login_first">Effettuare prima il login al proprio server.</string>
@@ -328,12 +312,10 @@
     <string name="sync_status_action_delete_media">Rimozione di %1$s nell\'album \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Rimozione dell\'album \'%s\'</string>
     <string name="sync_status_action_add_media">Aggiunta di %1$s all\'album \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Aggiunta dell\'album \'%s\'</string>
     <string name="sync_status_action_rename_album">Rinominare l\'album \'%1$s in \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Nascosto l\'album \'%s\'</string>
     <string name="sync_status_action_unhide_album">Nascondere l\'album \'%s\'</string>
     <string name="sync_status_action_update_file">Aggiornamento di %1$s nell\'album \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Aggiornamento della copertina dell\'album \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Aggiunta di %1$s all\'album comune \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Aggiornamento dei metadati dell\'album comune \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Aggiornamento dei metadati dell\'album \'%s\'</string>
@@ -401,7 +383,6 @@
     <string name="msg_invalid_gpx_file">%1$s non è valido o non è stato trovato alcun timestamp!</string>
     <string name="suffix_gpx_offset">mins di differenza consentiti</string>
     <string name="item_export_gpx">Esportazione GPX</string>
-    <string name="checkbox_text_dst">Correzione DST</string>
     <string name="hint_gpx_export_file_location">Il file verrà salvato nella cartella \"Download\".</string>
     <string name="trash_name">Cestino</string>
     <string name="gallery_backup_option_dialog_title">Impostazioni di \'%1$s\'</string>

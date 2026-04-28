@@ -89,6 +89,7 @@ import site.leos.apps.lespas.R
 import site.leos.apps.lespas.helper.ConfirmDialogFragment
 import site.leos.apps.lespas.helper.LesPasEmptyView
 import site.leos.apps.lespas.helper.LesPasFastScroller
+import site.leos.apps.lespas.helper.MetaDataDialogFragment
 import site.leos.apps.lespas.helper.ShareOutDialogFragment
 import site.leos.apps.lespas.helper.Tools
 import site.leos.apps.lespas.photo.Photo
@@ -316,7 +317,8 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                                         totalSize += mediaAdapter.getFileSize(selected)
                                     }
 
-                                    it.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                    if (selectionSize != 1) it.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                    else it.title = mediaAdapter.getPhotoName(selectionTracker.selection.first())
                                     it.subtitle = Tools.humanReadableByteCountSI(totalSize)
                                 }
 
@@ -571,6 +573,8 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
     }
     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean  {
         if (folderArgument != GalleryFragment.TRASH_FOLDER) {
+            menu?.findItem(R.id.info)?.isEnabled = selectionTracker.selection.size() == 1
+
             downloadMenuItem?.apply {
                 isEnabled = false
                 run breaking@ {
@@ -648,6 +652,20 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                 if (photos.isNotEmpty()) galleryModel.upload(photos)
 
                 selectionTracker.clearSelection()
+                true
+            }
+            R.id.info -> {
+                if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) {
+                    selectionTracker.selection.first().let { photoId ->
+                        mediaAdapter.getRemotePhoto(photoId)?.let { remotePhoto ->
+                            MetaDataDialogFragment.newInstance(remotePhoto, hasSizeInfo = true).show(parentFragmentManager, INFO_DIALOG)
+                        } ?: run {
+                            mediaAdapter.getGalleryMedia(photoId)?.let { galleryMedia ->
+                                MetaDataDialogFragment.newInstance(galleryMedia.media, hasSizeInfo = false).show(parentFragmentManager, INFO_DIALOG)
+                            }
+                        }
+                    }
+                }
                 true
             }
             else -> false
@@ -901,6 +919,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         internal fun atLocal(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.let { it.atLocal() || it.isLocal() }?: false
         internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.atRemote()) item.media else null }
         internal fun getGalleryMedia(photoId: String?): GalleryFragment.GalleryMedia? = currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.isLocal() || item.atLocal()) item else null }
+        internal fun getPhotoName(photoId: String): String = currentList.find { it.media.photo.id == photoId }?.media?.photo?.name ?: ""
 
         internal fun locationOfSelected(): Int {
             val x: Int = currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(0) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA
@@ -957,6 +976,8 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
     companion object {
         private const val CONFIRM_DIALOG = "CONFIRM_DIALOG"
         private const val SHARE_OUT_DIALOG = "SHARE_OUT_DIALOG"
+        private const val INFO_DIALOG = "INFO_DIALOG"
+
         private const val GALLERY_FOLDERVIEW_REQUEST_KEY = "GALLERY_FOLDERVIEW_REQUEST_KEY"
         private const val EMPTY_TRASH_REQUEST_KEY = "EMPTY_TRASH_REQUEST_KEY"
 

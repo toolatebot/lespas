@@ -28,9 +28,6 @@
     <!-- NCLogin fragment -->
     <string name="welcome_message_title">Bienvenue sur Les Pas !</string>
     <string name="welcome_message">Pour commencer, veuillez configurer l\'accès à votre serveur Nextcloud.</string>
-    <string name="button_text_scan">Scanner le mot de passe</string>
-    <string name="host_textinput_label">Adresse du serveur</string>
-    <string name="url_helper_text">Par exemple : https://example.com/nextcloud</string>
     <string name="http_toggle_helper_text">\u2B11Appuyez sur le préfixe pour activer le HTTP non sécurisé</string>
     <string name="verify_ssl_certificate_title">Certificat SSL incorrect</string>
     <string name="verify_ssl_certificate_message">Le certificat du serveur %1$s NE PEUT PAS être vérifié, voulez-vous faire confiance à ce serveur et continuer ?</string>
@@ -78,9 +75,6 @@
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="preparing_shares">Préparation des partages de fichiers…</string>
-    <string name="msg_error_preparing_share_out_files">Échec de la préparation des fichiers multimédias.</string>
-    <string name="msg_check_network">Vérifiez votre connexion au serveur.</string>
-    <string name="msg_server_operation">Les photos apparaîtront dans l\'album cible après la synchronisation avec le serveur.</string>
     <string name="option_menu_search">Rechercher un nom</string>
     <!-- PhotoSlide fragment -->
     <string name="option_menu_slideshow">Diaporama</string>
@@ -151,10 +145,6 @@
     <string name="logout_title">Se déconnecter</string>
     <string name="msg_logout_dialog">Déconnexion du compte %1$s ?</string>
     <string name="yes_logout">Déconnexion</string>
-    <string name="backup_exif_location_permission_rationale">Pour sauvegarder les données GPS enregistrées dans une photo</string>
-    <string name="search_exif_location_permission_rationale">Pour rechercher des informations sur l\'emplacement dans la galerie</string>
-    <string name="read_exif_location_permission_rationale">Pour afficher les informations de localisation des photos</string>
-    <string name="need_access_media_location_permission">Les Pas a besoin de l\'autorisation \"Fichiers et contenus multimédias\".</string>
     <string name="proceed_request">Continuer</string>
     <!-- Destination DialogFragment -->
     <string name="sync_status_stage_backup_pictures">Sauvegarde des fichiers multimédias...</string>
@@ -233,7 +223,6 @@
     <!-- Camera Roll Activity -->
     <string name="msg_no_media_found">Aucune image ou vidéo n\'a été trouvée dans l\'appareil.</string>
     <!-- Camera Roll Fragment -->
-    <string name="tooltips_fetch_backup">Afficher les sauvegardes sur le serveur</string>
     <string name="tooltips_date_picker">Choisir une date</string>
     <string name="tooltips_enable_backup">Activer la sauvegarde</string>
     <string name="tooltips_backup_setting">Paramètres de sauvegarde</string>
@@ -246,13 +235,10 @@
     <string name="camera_roll_name">Appareil photo</string>
     <string name="msg_remove_old_files_warning">AVERTISSEMENT : Si vous avez choisi de ne pas sauvegarder les fichiers existants lorsque vous avez activé la sauvegarde pour ce dossier, ces fichiers seront également supprimés si vous activez ce paramètre !</string>
     <string name="button_text_i_understand">Je comprends</string>
-    <string name="checkbox_text_remove_archive_too">Supprimer également la copie de sauvegarde dans les archives du serveur</string>
     <string name="checkbox_text_remove_archive_copy">La copie d\'archive sur le serveur</string>
     <string name="button_text_grant">Autoriser</string>
     <string name="tooltips_search_album">Rechercher dans les albums</string>
     <string name="tooltips_search_gallery">Recherche dans la galerie</string>
-    <string name="condition_to_perform_search">Il doit y avoir au moins un album existant OU une autorisation d\'accès au stockage accordée pour exécuter la fonction de recherche.</string>
-    <string name="button_text_leave">Quitter</string>
     <string name="need_albums">Veuillez d\'abord créer un album.</string>
     <!-- Search Result Fragment -->
     <string name="title_in_album">%1$s dans les albums</string>
@@ -265,13 +251,11 @@
     <string name="item_show_meta">Afficher les métadonnées</string>
     <string name="item_refresh_publication">Actualiser les publications</string>
     <!-- Remote Media Fragment -->
-    <string name="button_text_download">Télécharger</string>
     <string name="button_text_add_to_lespas">Ajouter à l\'album</string>
     <!-- Location Search Fragment -->
     <string name="option_menu_in_map">Afficher sur la carte</string>
     <!-- Photo in Map Fragment -->
     <string name="option_menu_map_slideshow">Diaporama</string>
-    <string name="option_menu_mute">Mettre en sourdine</string>
     <!-- Image Recognition -->
     <!-- Object label -->
     <string name="button_text_motion_play">Lecture de photos animées</string>
@@ -296,12 +280,10 @@
     <string name="sync_status_action_delete_media">Suppression de %1$s dans l\'album \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Suppression de l\'album \'%s\'</string>
     <string name="sync_status_action_add_media">Ajout de %1$s à l\'album \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Ajout de l\'album \'%s\'</string>
     <string name="sync_status_action_rename_album">Renommer l\'album \'%1$s en \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Cache l\'album \'%s\'</string>
     <string name="sync_status_action_unhide_album">Dé-cacher l\'album \'%s\'</string>
     <string name="sync_status_action_update_file">Mise à jour de %1$s dans l\'album \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Mise à jour de la couverture de l\'album \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Ajout de %1$s à l\'album commun \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Mise à jour des métadonnées de l\'album commun \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Mise à jour des métadonnées de l\'album \'%s\'</string>
@@ -368,7 +350,6 @@
     <string name="msg_invalid_gpx_file">%1$s est invalide, ou aucun horodatage n\'a été trouvé !</string>
     <string name="suffix_gpx_offset">mins de différence accordées</string>
     <string name="item_export_gpx">Exporter GPX</string>
-    <string name="checkbox_text_dst">Correction DST</string>
     <string name="hint_gpx_export_file_location">Le fichier sera enregistré dans le dossier \"Download\".</string>
     <string name="trash_name">La corbeille</string>
     <string name="gallery_backup_option_dialog_title">Paramètres de \'%1$s\'</string>

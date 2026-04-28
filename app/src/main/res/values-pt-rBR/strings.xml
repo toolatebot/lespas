@@ -31,9 +31,6 @@
     <!-- NCLogin activity -->
     <string name="welcome_message_title">Bem-vindo ao Les Pas!</string>
     <string name="welcome_message">Para começar, favor conceder acesso ao seu servidor Nextcloud.</string>
-    <string name="button_text_scan">Digitalizar Código QR</string>
-    <string name="host_textinput_label">Endereço do Servidor</string>
-    <string name="url_helper_text">Ex. https://exemplo.com.br/nextcloud</string>
     <string name="http_toggle_helper_text">\u2B11Toque no prefixo para usar HTTP inseguro</string>
     <string name="verify_ssl_certificate_title">Certificado SSL Inválido</string>
     <string name="verify_ssl_certificate_message">O certificado do servidor %1$s NÃO PODE ser verificado, você quer confiar neste servidor e continuar assim mesmo?</string>
@@ -76,8 +73,6 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="preparing_shares">Preparando compartilhamentos…</string>
-    <string name="msg_error_preparing_share_out_files">Falha ao preparar arquivos de mídia.</string>
-    <string name="msg_check_network">Verifique sua conexão.</string>
 
     <!-- PhotoSlide fragment -->
     <string name="option_menu_slideshow">Mostra de slides</string>
@@ -152,10 +147,6 @@
     <string name="msg_logout_dialog">Sair da conta %1$s?</string>
     <string name="yes_logout">Sim, sair</string>
 
-    <string name="backup_exif_location_permission_rationale">Para fazer o backup dos dados de GPS salvos na foto</string>
-    <string name="search_exif_location_permission_rationale">Para pesquisar informações de localização na galeria</string>
-    <string name="read_exif_location_permission_rationale">Para mostrar informações de localização das fotos</string>
-    <string name="need_access_media_location_permission">, Les Pas precisa de acesso á localização de mídia neste dispositivo.</string>
     <string name="proceed_request">Continuar</string>
 
     <!-- Destination DialogFragment -->
@@ -242,13 +233,10 @@
     <string name="camera_roll_name">Câmera</string>
     <string name="msg_remove_old_files_warning">AVISO: Se você optou por não fazer backup dos arquivos existentes quando ativou o backup para essa pasta pela primeira vez, esses arquivos existentes TAMBÉM SERÃO REMOVIDOS ao ativar essa configuração!</string>
     <string name="button_text_i_understand">Eu entendo</string>
-    <string name="checkbox_text_remove_archive_too">Excluir também a cópia de backup no arquivo do servidor</string>
     <string name="checkbox_text_remove_archive_copy">Cópia de arquivo no servidor</string>
     <string name="button_text_grant">Autorizzare</string>
     <string name="tooltips_search_album">Pesquisar nos álbuns</string>
     <string name="tooltips_search_gallery">Pesquisar na galeria</string>
-    <string name="condition_to_perform_search">Para pesquisar é necessário existir pelo menos um álbum ou ter a permissão de acesso ao armazenamento.</string>
-    <string name="button_text_leave">Sair</string>
     <string name="need_albums">Favor criar um álbum primeiro.</string>
 
     <!-- Search Result Fragment -->
@@ -265,7 +253,6 @@
     <string name="item_refresh_publication">Atualizar publicações</string>
 
     <!-- Remote Media Fragment -->
-    <string name="button_text_download">Baixar</string>
     <string name="button_text_add_to_lespas">Adicionar ao álbum</string>
 
     <!-- Location Search Fragment -->
@@ -273,7 +260,6 @@
 
     <!-- Photo in Map Fragment -->
     <string name="option_menu_map_slideshow">Apresentação</string>
-    <string name="option_menu_mute">Com/sem som</string>
 
     <!-- Image Recognition -->
     <!-- Object label -->
@@ -301,7 +287,6 @@
     <string name="chinese_map_title">Use o aplicativo de mapa chinês</string>
     <string name="chinese_map_summary">Todas as aplicações de mapas da China utilizam um sistema de coordenadas único.</string>
     <string name="map_header">Mapa</string>
-    <string name="msg_server_operation">As fotos aparecerão no álbum de destino após a sincronização com o servidor.</string>
     <string name="item_wide_list">Mostrar nome</string>
     <string name="action_export">Exportar</string>
     <string name="action_rename_media">Renomear</string>
@@ -309,7 +294,6 @@
     <string name="nearby_convergence_title">Convergem automaticamente fotos próximas</string>
     <string name="nearby_convergence_summary">Ao reproduzir slideshow no mapa, converge as fotos para a próxima que tem coordenada GPS.</string>
     <string name="true_black_title">Verdadeiro tema negro e escuro</string>
-    <string name="tooltips_fetch_backup">Mostrar backups no servidor</string>
     <string name="tooltips_enable_backup">Ativar backup</string>
     <string name="tooltips_backup_setting">Configuração de backup</string>
     <string name="msg_archive_empty">Arquivo vazio até que você inicie o backup de sua galeria.</string>
@@ -325,12 +309,10 @@
     <string name="sync_status_action_delete_media">Removendo %1$s no álbum \'%2$s\'</string>
     <string name="sync_status_action_delete_album">Remoção do álbum \'%s\'</string>
     <string name="sync_status_action_add_media">Acrescentando %1$s ao álbum \'%2$s\'</string>
-    <string name="sync_status_action_add_album">Adicionando o álbum \'%s\'</string>
     <string name="sync_status_action_rename_album">Renomeando o álbum \'%1$s para \'%2$s\'</string>
     <string name="sync_status_action_hide_album">Esconder o álbum \'%s\'</string>
     <string name="sync_status_action_unhide_album">Desproteger o álbum \'%s\'</string>
     <string name="sync_status_action_update_file">Atualizando %1$s no álbum \'%2$s\'</string>
-    <string name="sync_status_action_update_album_cover">Atualização da capa do álbum \'%s\'</string>
     <string name="sync_status_action_add_media_to_joint_album">Adicionando %1$s ao álbum conjunto \'%2$s\'</string>
     <string name="sync_status_action_update_joint_album_meta">Atualização dos meta dados do álbum conjunto \'%s\'</string>
     <string name="sync_status_action_update_album_meta">Atualização dos meta dados do álbum \'%s\'</string>
@@ -398,7 +380,6 @@
     <string name="msg_invalid_gpx_file">%1$s é inválido, ou nenhum carimbo de tempo encontrado!</string>
     <string name="suffix_gpx_offset">diferença de mins permitida</string>
     <string name="item_export_gpx">Exportar GPX</string>
-    <string name="checkbox_text_dst">Correção DST</string>
     <string name="hint_gpx_export_file_location">O arquivo será salvo na pasta \'Download\'.</string>
     <string name="trash_name">Lixeira</string>
     <string name="gallery_backup_option_dialog_title">Configurações de \'%1$s\'</string>

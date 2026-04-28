@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 import site.leos.apps.lespas.R
 import site.leos.apps.lespas.helper.ConfirmDialogFragment
 import site.leos.apps.lespas.helper.LesPasEmptyView
+import site.leos.apps.lespas.helper.MetaDataDialogFragment
 import site.leos.apps.lespas.helper.ShareOutDialogFragment
 import site.leos.apps.lespas.helper.Tools
 import site.leos.apps.lespas.photo.Photo
@@ -245,7 +246,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                         if (selectionTracker.hasSelection() && actionMode == null) {
                             actionMode = (requireActivity() as AppCompatActivity).startSupportActionMode(this@GalleryOverviewFragment)
                             actionMode?.run {
-                                title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                title = if (selectionSize != 1) resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize) else overviewAdapter.getPhotoName(selectionTracker.selection.first())
                                 subtitle = overviewAdapter.getSelectionFileSize()
                             }
                             selectionBackPressedCallback.isEnabled = true
@@ -256,7 +257,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                             selectionBackPressedCallback.isEnabled = false
                         } else {
                             actionMode?.run {
-                                title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                title = if (selectionSize != 1) resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize) else overviewAdapter.getPhotoName(selectionTracker.selection.first())
                                 subtitle = overviewAdapter.getSelectionFileSize()
                             }
                         }
@@ -466,6 +467,8 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
             isEnabled = false
         }
 
+        menu?.findItem(R.id.info)?.isEnabled = selectionTracker.selection.size() == 1
+
         downloadMenuItem?.apply {
             isEnabled = false
             run breaking@ {
@@ -536,6 +539,20 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
                 if (photos.isNotEmpty()) galleryModel.upload(photos)
 
                 selectionTracker.clearSelection()
+                true
+            }
+            R.id.info -> {
+                if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) {
+                    selectionTracker.selection.first().let { photoId ->
+                        overviewAdapter.getRemotePhoto(photoId)?.let { remotePhoto ->
+                            MetaDataDialogFragment.newInstance(remotePhoto, hasSizeInfo = true).show(parentFragmentManager, INFO_DIALOG)
+                        } ?: run {
+                            overviewAdapter.getGalleryMedia(photoId)?.let { galleryMedia ->
+                                MetaDataDialogFragment.newInstance(galleryMedia.media, hasSizeInfo = false).show(parentFragmentManager, INFO_DIALOG)
+                            }
+                        }
+                    }
+                }
                 true
             }
             else -> false
@@ -783,6 +800,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
         internal fun atLocal(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.let { it.atLocal() || it.isLocal() }?: false
         internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.atRemote()) item.media else null }
         internal fun getGalleryMedia(photoId: String?): GalleryFragment.GalleryMedia? = currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.isLocal() || item.atLocal()) item else null }
+        internal fun getPhotoName(photoId: String): String = currentList.find { it.media.photo.id == photoId }?.media?.photo?.name ?: ""
 
         internal fun locationOfSelected(): Int {
             val x: Int = currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(0) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA
@@ -863,6 +881,7 @@ class GalleryOverviewFragment : Fragment(), ActionMode.Callback {
         private const val CONFIRM_DIALOG = "CONFIRM_DIALOG"
         private const val BACKUP_OPTION_DIALOG = "BACKUP_OPTION_DIALOG"
         private const val SHARE_OUT_DIALOG = "SHARE_OUT_DIALOG"
+        private const val INFO_DIALOG = "INFO_DIALOG"
 
         private const val GALLERY_OVERVIEW_REQUEST_KEY = "GALLERY_OVERVIEW_REQUEST_KEY"
         private const val BACKUP_EXISTING_REQUEST_KEY = "BACKUP_EXISTING_REQUEST_KEY"

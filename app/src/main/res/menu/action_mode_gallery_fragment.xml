@@ -22,16 +22,22 @@
     <item android:id="@+id/remove"
         android:title="@string/action_remove"
         android:icon="@drawable/ic_baseline_delete_24"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item android:id="@+id/add"
         android:title="@string/action_reuse"
         android:icon="@drawable/ic_baseline_footprint_24"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item android:id="@+id/share"
         android:title="@string/action_share"
         android:icon="@drawable/ic_baseline_share_24"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/info"
+        android:title="@string/button_text_info"
+        android:icon="@drawable/ic_baseline_info_24"
+        android:enabled="false"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/download_to_device"

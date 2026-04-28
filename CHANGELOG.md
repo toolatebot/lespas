@@ -1,3 +1,6 @@
+## Version 2.11.2
+* Various improvements and bug fixes
+
 ## Version 2.11.1
 * Optimized experience on Android TV
 * Various improvements and bug fixes
