@@ -81,10 +81,11 @@ import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialElevationScale
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import site.leos.apps.lespas.R
 import site.leos.apps.lespas.helper.ConfirmDialogFragment
 import site.leos.apps.lespas.helper.LesPasEmptyView
@@ -175,11 +176,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         ).apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
 
         selectionBackPressedCallback = object : OnBackPressedCallback(false) {
-            override fun handleOnBackPressed() {
-                if (selectionTracker.hasSelection()) {
-                    selectionTracker.clearSelection()
-                }
-            }
+            override fun handleOnBackPressed() { actionMode?.finish() }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, selectionBackPressedCallback)
 
@@ -262,7 +259,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                     return when {
                         galleryModel.isPreparingShareOut() -> false                                     // Can't select when sharing out
                         key.isEmpty() -> false                                                          // Empty space in list
-                        key.startsWith("content") -> true                                        // Normal media items in device gallery
+                        key.first().isLetter() -> true                                                  // Normal media items in device gallery key start with "content"
                         key.isDigitsOnly() -> true                                                      // fileId for archived items
                         else -> {                                                                       // Date items, select or deselect photos in the same day when user click on Date item
                             val startPos = mediaAdapter.getPhotoPosition(key) + 1   // There is at least one photos in this date
@@ -270,7 +267,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                             while(endPos != mediaAdapter.currentList.size && mediaAdapter.currentList[endPos].location != GalleryFragment.GalleryMedia.IS_NOT_MEDIA) { endPos ++ }
 
                             // Enable selected state ping-pong effect, the selection state will be set true if the first or last item in this date is not selected
-                            // Ideal way is to check all selected state in the date, but that seems to take a long time when there are a lot photos in the date
+                            // Ideal way is to check all selected state in the date, but that seems to take a long time when there are a lot of photos in the date
                             selectionTracker.setItemsSelected(mediaAdapter.currentList.subList(startPos, endPos).map { it.media.photo.id }, !selectionTracker.isSelected(mediaAdapter.currentList[endPos - 1].media.photo.id) || !selectionTracker.isSelected(mediaAdapter.currentList[startPos].media.photo.id))
 
                             false
@@ -283,50 +280,54 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
             selectionTracker.addObserver(object : SelectionTracker.SelectionObserver<String>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
+                    if (actionMode == null) activateActionMode()
                     updateUI()
                 }
 
                 override fun onSelectionRestored() {
                     super.onSelectionRestored()
+                    activateActionMode()
                     updateUI()
                 }
 
                 private fun updateUI() {
-                    if (galleryModel.isPicker()) {
-                        galleryModel.setPickedId(if (selectionTracker.hasSelection()) selectionTracker.selection.first() else "")
-                    } else {
-                        if (selectionTracker.hasSelection() && actionMode == null) {
-                            actionMode = (requireActivity() as AppCompatActivity).startSupportActionMode(this@GalleryFolderViewFragment)
-                            selectionBackPressedCallback.isEnabled = true
-                        } else if (!(selectionTracker.hasSelection()) && actionMode != null) {
+                    when {
+                        galleryModel.isPicker() -> lifecycleScope.launch {
+                            galleryModel.setPickedId(if (selectionTracker.hasSelection()) selectionTracker.selection.first() else "")
+                        }
+                        selectionTracker.hasSelection() -> {
+                            // Action mode is started, selection size is non-zero, update Action Bar
+                            selectionTracker.selection.size().let { selectionSize ->
+                                var totalSize = 0L
+
+                                // Update action bar title
+                                if (selectionSize != 1) actionMode!!.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
+                                else actionMode!!.title = mediaAdapter.getPhotoName(selectionTracker.selection.first())
+
+                                // Update action bar subtitle with total file size of selected medias
+                                actionModeTitleUpdateJob?.cancel()
+                                actionModeTitleUpdateJob = lifecycleScope.launch(Dispatchers.IO) {
+                                    ensureActive()
+                                    mediaAdapter.currentList.filter { it.media.photo.id in selectionTracker.selection }.forEach { totalSize += it.media.photo.caption.toLong() }
+                                    Tools.humanReadableByteCountSI(totalSize).let { size -> withContext(Dispatchers.Main) { actionMode!!.subtitle = size }}
+                                }
+                            }
+                        }
+                        else -> {
+                            // Selection size is 0 and action mode is active, return to non-selection mode
                             actionMode?.subtitle = ""
                             actionMode?.finish()
                             actionMode = null
                             selectionBackPressedCallback.isEnabled = false
-                        }
-
-                        // Update UI
-                        actionModeTitleUpdateJob?.cancel()
-                        actionModeTitleUpdateJob = lifecycleScope.launch {
-                            selectionTracker.selection.size().let { selectionSize ->
-                                actionMode?.let {
-                                    delay(100)
-                                    var totalSize = 0L
-                                    selectionTracker.selection.forEach { selected ->
-                                        ensureActive()
-                                        totalSize += mediaAdapter.getFileSize(selected)
-                                    }
-
-                                    if (selectionSize != 1) it.title = resources.getQuantityString(R.plurals.selected_count, selectionSize, selectionSize)
-                                    else it.title = mediaAdapter.getPhotoName(selectionTracker.selection.first())
-                                    it.subtitle = Tools.humanReadableByteCountSI(totalSize)
-                                }
-
-                                // Enable or disable sub folder chips base on selection mode
-                                (selectionSize <= 0).let { state -> subFolderChipGroup.forEach { it.isClickable = state } }
-                            }
+                            subFolderChipGroup.forEach { it.isClickable = true }
                         }
                     }
+                }
+
+                private fun activateActionMode() {
+                    actionMode = (requireActivity() as AppCompatActivity).startSupportActionMode(this@GalleryFolderViewFragment)
+                    selectionBackPressedCallback.isEnabled = true
+                    subFolderChipGroup.forEach { it.isClickable = false }
                 }
             })
             mediaAdapter.setSelectionTracker(selectionTracker)
@@ -401,7 +402,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         )
 
         parentFragmentManager.setFragmentResultListener(GalleryDeletionDialogFragment.GALLERY_DELETION_DIALOG_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
-            if (bundle.getBoolean(GalleryDeletionDialogFragment.GALLERY_DELETION_DIALOG_RESULT_KEY)) galleryModel.remove(getSelectedPhotos(), removeLocal = bundle.getBoolean(GalleryDeletionDialogFragment.DELETE_LOCAL_RESULT_KEY), removeArchive = bundle.getBoolean(GalleryDeletionDialogFragment.DELETE_REMOTE_RESULT_KEY))
+            if (bundle.getBoolean(GalleryDeletionDialogFragment.GALLERY_DELETION_DIALOG_RESULT_KEY)) galleryModel.remove(getSelectedPhotoIDs(), removeLocal = bundle.getBoolean(GalleryDeletionDialogFragment.DELETE_LOCAL_RESULT_KEY), removeArchive = bundle.getBoolean(GalleryDeletionDialogFragment.DELETE_REMOTE_RESULT_KEY))
         }
 
         parentFragmentManager.setFragmentResultListener(GALLERY_FOLDERVIEW_REQUEST_KEY, viewLifecycleOwner) { _, bundle ->
@@ -414,12 +415,12 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         parentFragmentManager.setFragmentResultListener(ShareOutDialogFragment.SHARE_OUT_DIALOG_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
             if (bundle.getBoolean(ShareOutDialogFragment.SHARE_OUT_DIALOG_RESULT_KEY, true))
                 galleryModel.shareOut(
-                    photoIds = getSelectedPhotos(),
+                    photoIds = getSelectedPhotoIDs(),
                     strip = bundle.getBoolean(ShareOutDialogFragment.STRIP_RESULT_KEY, false),
                     lowResolution = bundle.getBoolean(ShareOutDialogFragment.LOW_RESOLUTION_RESULT_KEY, false),
                     removeAfterwards = bundle.getBoolean(ShareOutDialogFragment.REMOVE_AFTERWARDS_RESULT_KEY, false),
                 )
-            else selectionTracker.clearSelection()
+            else actionMode?.finish()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -571,6 +572,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
 
         return true
     }
+    
     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean  {
         if (folderArgument != GalleryFragment.TRASH_FOLDER) {
             menu?.findItem(R.id.info)?.isEnabled = selectionTracker.selection.size() == 1
@@ -605,12 +607,12 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when(item?.itemId) {
             R.id.add -> {
-                galleryModel.add(getSelectedPhotos())
+                galleryModel.add(getSelectedPhotoIDs())
                 true
             }
             R.id.remove -> {
                 when {
-                    folderArgument == GalleryFragment.TRASH_FOLDER -> galleryModel.restore(getSelectedPhotos())
+                    folderArgument == GalleryFragment.TRASH_FOLDER -> galleryModel.restore(getSelectedPhotoIDs())
                     parentFragmentManager.findFragmentByTag(GalleryDeletionDialogFragment.GALLERY_DELETION_DIALOG_RESULT_KEY) == null -> {
                         val location = mediaAdapter.locationOfSelected()
                         GalleryDeletionDialogFragment.newInstance(
@@ -624,11 +626,11 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                 true
             }
             R.id.share -> {
-                val photoIds = getSelectedPhotos(false)
+                val photoIds = getSelectedPhotoIDs(false)
                 if (parentFragmentManager.findFragmentByTag(SHARE_OUT_DIALOG) == null)
                     ShareOutDialogFragment.newInstance(mimeTypes = galleryModel.getMimeTypes(photoIds), showRemoveAfterwards = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaStore.canManageMedia(requireContext()) else false)?.show(parentFragmentManager, SHARE_OUT_DIALOG)
                     ?: run {
-                        selectionTracker.clearSelection()
+                        actionMode?.finish()
                         galleryModel.shareOut(photoIds, strip = false, lowResolution = false, removeAfterwards = false)
                     }
 
@@ -643,7 +645,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                 selectionTracker.selection.forEach { photoId -> mediaAdapter.getRemotePhoto(photoId)?.let { remoteIds.add(it) }}
                 if (remoteIds.isNotEmpty()) galleryModel.download(requireContext(), remoteIds)
 
-                selectionTracker.clearSelection()
+                actionMode?.finish()
                 true
             }
             R.id.upload_to_archive -> {
@@ -651,7 +653,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
                 selectionTracker.selection.forEach { photoId -> mediaAdapter.getGalleryMedia(photoId)?.let { photos.add(it) }}
                 if (photos.isNotEmpty()) galleryModel.upload(photos)
 
-                selectionTracker.clearSelection()
+                actionMode?.finish()
                 true
             }
             R.id.info -> {
@@ -671,7 +673,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
             else -> false
         }
     }
-
+    
     override fun onDestroyActionMode(mode: ActionMode?) {
         selectionTracker.clearSelection()
         actionMode = null
@@ -719,8 +721,6 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         subFolderChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             currentCheckedTag = subFolderChipGroup.findViewById<Chip>(checkedIds[0]).tag as String
 
-            // Appview changed, clear selection
-            selectionTracker.clearSelection()
             setList(null)
         }
 
@@ -776,9 +776,9 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         }
     }
 
-    private fun getSelectedPhotos(clearSelection: Boolean = true): List<String> = mutableListOf<String>().apply {
+    private fun getSelectedPhotoIDs(clearSelection: Boolean = true): List<String> = mutableListOf<String>().apply {
         selectionTracker.selection.forEach { add(it) }
-        if (clearSelection) selectionTracker.clearSelection()
+        if (clearSelection) actionMode?.finish()
     }
 
     class MediaAdapter(
@@ -791,6 +791,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         private var selectedMark: Drawable? = null
         private var panoramaMark: Drawable? = null
         private val defaultOffset = OffsetDateTime.now().offset
+        private var indexMap = mapOf<String, Int>()
 
         inner class MediaViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             val ivPhoto: ImageView = itemView.findViewById<ImageView>(R.id.photo).apply {
@@ -801,34 +802,33 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
             private val ivArchive: View = itemView.findViewById(R.id.archive_media)
 
             fun bind(item: GalleryFragment.GalleryMedia) {
-                val photo = item.media.photo
-                itemView.let {
-                    it.isSelected = selectionTracker.isSelected(photo.id)
+                item.media.photo.let { photo ->
+                    // Prevent re-loading image again which result in a flickering
+                    if (ivPhoto.getTag(R.id.PHOTO_ID) != photo.id) imageLoader(item.media, ivPhoto)
+                    ViewCompat.setTransitionName(ivPhoto, photo.id)
 
-                    with(ivPhoto) {
-                        // Prevent re-loading image again which result in a flickering
-                        if (getTag(R.id.PHOTO_ID) != item.media.photo.id) imageLoader(item.media, this)
-
-                        bindLocationIndicator(item)
-
-                        ViewCompat.setTransitionName(this, photo.id)
-
-                        foreground = when {
-                            it.isSelected -> selectedMark
-                            Tools.isMediaPlayable(photo.mimeType) -> playMark
-                            photo.mimeType == Tools.PANORAMA_MIMETYPE -> panoramaMark
-                            else -> null
-                        }
-
-                        if (it.isSelected) colorFilter = selectedFilter
-                        else clearColorFilter()
-                    }
+                    bindLocationIndicator(item)
+                    bindSelectedState(photo)
                 }
             }
 
             fun bindLocationIndicator(item: GalleryFragment.GalleryMedia) {
                 ivLocal.isActivated = item.atLocal()
                 ivArchive.isActivated = item.atRemote()
+            }
+
+            fun bindSelectedState(item: Photo) {
+                selectionTracker.isSelected(item.id).let { isSelected ->
+                    //itemView.isSelected = isSelected
+                    ivPhoto.foreground = when {
+                        isSelected -> selectedMark
+                        Tools.isMediaPlayable(item.mimeType) -> playMark
+                        item.mimeType == Tools.PANORAMA_MIMETYPE -> panoramaMark
+                        else -> null
+                    }
+                    if (isSelected) ivPhoto.colorFilter = selectedFilter
+                    else ivPhoto.clearColorFilter()
+                }
             }
 
             fun getItemDetails() = object : ItemDetailsLookup.ItemDetails<String>() {
@@ -872,8 +872,12 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
             if (holder is MediaViewHolder) {
-                if (payloads.isEmpty()) holder.bind(currentList[position])
-                else if (payloads[0] == PAYLOAD_LOCATION_CHANGED) holder.bindLocationIndicator(currentList[position]) else holder.bind(currentList[position])
+                when {
+                    payloads.isEmpty() -> holder.bind(currentList[position])
+                    payloads[0] == SelectionTracker.SELECTION_CHANGED_MARKER -> holder.bindSelectedState(currentList[position].media.photo)
+                    payloads[0] == PAYLOAD_LOCATION_CHANGED -> holder.bindLocationIndicator(currentList[position])
+                    else -> holder.bind(currentList[position])
+                }
             }
             else (holder as DateViewHolder).bind(currentList[position])
         }
@@ -893,8 +897,11 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
 */
 
         override fun getItemViewType(position: Int): Int = if (currentList[position].location == GalleryFragment.GalleryMedia.IS_NOT_MEDIA) TYPE_DATE else TYPE_MEDIA
+        override fun submitList(list: List<GalleryFragment.GalleryMedia>?, commitCallback: Runnable?) {
+            super.submitList(list, commitCallback)
+            list?.let { indexMap = it.mapIndexed { index, media -> media.media.photo.id to index }.toMap() }
+        }
 
-        internal fun getFileSize(selected: String): Long = currentList.find { it.media.photo.id == selected }?.media?.photo?.caption?.toLong() ?: 0L
         internal fun setMarks(playMark: Drawable, selectedMark: Drawable, panoramaMark: Drawable) {
             this.playMark = playMark
             this.selectedMark = selectedMark
@@ -902,7 +909,7 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         }
         internal fun setSelectionTracker(selectionTracker: SelectionTracker<String>) { this.selectionTracker = selectionTracker }
         internal fun getPhotoId(position: Int): String = currentList[position].media.photo.id
-        internal fun getPhotoPosition(photoId: String): Int = currentList.indexOfFirst { it.media.photo.id == photoId }
+        internal fun getPhotoPosition(photoId: String): Int = indexMap[photoId] ?: -1
 
         fun hasDate(date: Long): Boolean {
             val theDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()).toLocalDate()
@@ -915,17 +922,17 @@ class GalleryFolderViewFragment : Fragment(), ActionMode.Callback {
         fun getDateByPosition(position: Int): Long = currentList[position].media.photo.lastModified.atZone(defaultOffset).toInstant().toEpochMilli()
         fun getAllItems(): List<GalleryFragment.GalleryMedia> = currentList.filter { it.location != GalleryFragment.GalleryMedia.IS_NOT_MEDIA }
 
-        internal fun atRemote(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.atRemote() ?: false
-        internal fun atLocal(photoId: String): Boolean = currentList.find { it.media.photo.id == photoId }?.let { it.atLocal() || it.isLocal() }?: false
-        internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.atRemote()) item.media else null }
-        internal fun getGalleryMedia(photoId: String?): GalleryFragment.GalleryMedia? = currentList.find { it.media.photo.id == photoId }?.let { item -> if (item.isLocal() || item.atLocal()) item else null }
-        internal fun getPhotoName(photoId: String): String = currentList.find { it.media.photo.id == photoId }?.media?.photo?.name ?: ""
+        internal fun atRemote(photoId: String): Boolean = currentList[getPhotoPosition(photoId)].atRemote()
+        internal fun atLocal(photoId: String): Boolean = currentList[getPhotoPosition(photoId)].let { it.atLocal() || it.isLocal() }
+        internal fun getRemotePhoto(photoId: String): NCShareViewModel.RemotePhoto? =  currentList[getPhotoPosition(photoId)].let { item -> if (item.atRemote()) item.media else null }
+        internal fun getGalleryMedia(photoId: String): GalleryFragment.GalleryMedia? = currentList[getPhotoPosition(photoId)].let { item -> if (item.isLocal() || item.atLocal()) item else null }
+        internal fun getPhotoName(photoId: String): String = currentList[getPhotoPosition(photoId)].media.photo.name
 
         internal fun locationOfSelected(): Int {
-            val x: Int = currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(0) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA
+            val x: Int = currentList[getPhotoPosition(selectionTracker.selection.elementAt(0))].location
 
             for (i in 1 until selectionTracker.selection.size()) {
-                if (x == (currentList.find { it.media.photo.id == selectionTracker.selection.elementAt(i) }?.location ?: GalleryFragment.GalleryMedia.IS_NOT_MEDIA)) continue
+                if (x == currentList[getPhotoPosition(selectionTracker.selection.elementAt(i))].location) continue
                 else return GalleryFragment.GalleryMedia.IS_BOTH
             }
 

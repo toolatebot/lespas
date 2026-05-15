@@ -1226,6 +1226,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
         private var playMark: Drawable? = null
         private var selectedMark: Drawable? = null
         private var panoramaMark: Drawable? = null
+        private var indexMap = mapOf<String, Int>()
 
         inner class CoverViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val ivCover = itemView.findViewById<ImageView>(R.id.photo)
@@ -1282,7 +1283,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
         }
 
         inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private var currentPhotoName = ""
+            //private var currentPhotoName = ""
             private val ivPhoto: ImageView  = itemView.findViewById<ImageView>(R.id.photo).apply {
                 setOnClickListener { if (!selectionTracker.hasSelection()) clickListener(this, bindingAdapterPosition) }
                 foregroundGravity = Gravity.CENTER
@@ -1294,31 +1295,40 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                     it.isSelected = selectionTracker.isSelected(photo.id)
 
                     with(ivPhoto) {
+/*
                         if (currentPhotoName != photo.name) {
                             imageLoader(photo, this, NCShareViewModel.TYPE_GRID)
                             ViewCompat.setTransitionName(this, photo.id)
                             currentPhotoName = photo.name
                         }
+*/
+                        if (ivPhoto.getTag(R.id.PHOTO_ID) != photo.id) imageLoader(photo, this, NCShareViewModel.TYPE_GRID)
+                        ViewCompat.setTransitionName(this, photo.id)
 
+                        binViewSelectionState(photo)
+                    }
+
+                    tvTitle?.text = photo.name.substringBeforeLast('.')
+                }
+            }
+
+            fun binViewSelectionState(photo: Photo) {
+                selectionTracker.isSelected(photo.id).let { isSelected ->
+                    with(ivPhoto) {
                         foreground = when {
-                            it.isSelected -> selectedMark
+                            isSelected -> selectedMark
                             Tools.isMediaPlayable(photo.mimeType) -> playMark
                             photo.mimeType == Tools.PANORAMA_MIMETYPE -> panoramaMark
                             else -> null
                         }
-
-                        if (it.isSelected) {
+                        if (isSelected) {
                             colorFilter = selectedFilter
                             tvTitle?.isVisible = false
                         } else {
                             clearColorFilter()
                             tvTitle?.isVisible = true
                         }
-
-                        //setOnClickListener { if (!selectionTracker.hasSelection()) clickListener(this, bindingAdapterPosition) }
                     }
-
-                    tvTitle?.text = photo.name.substringBeforeLast('.')
                 }
             }
 
@@ -1351,7 +1361,14 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
             if (payloads.isEmpty()) onBindViewHolder(holder, position)
-            else if (holder is CoverViewHolder) holder.bindViewItem(currentList.first(), payloads) else (holder as PhotoViewHolder).bindViewItem(currentList[position])
+            else if (holder is CoverViewHolder) holder.bindViewItem(currentList.first(), payloads)
+            else {
+                when {
+                    payloads.isEmpty() -> (holder as PhotoViewHolder).bindViewItem(currentList[position])
+                    payloads[0] == SelectionTracker.SELECTION_CHANGED_MARKER -> (holder as PhotoViewHolder).binViewSelectionState(currentList[position])
+                    else -> (holder as PhotoViewHolder).bindViewItem(currentList[position])
+                }
+            }
         }
 
         override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -1381,6 +1398,8 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
 
                     if (query.isNotEmpty()) filter(query)
                     else submitList(photos)
+
+                    indexMap = photos.mapIndexed { index, photo -> photo.id to index }.toMap()
                 }
             }
         }
@@ -1401,11 +1420,11 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
         }
 
         internal fun getPhotoAt(position: Int): Photo = currentList[position]
-        internal fun getPhotoBy(photoId: String): Photo? = try { currentList.last { it.id == photoId }} catch (_: NoSuchElementException) { null }
+        internal fun getPhotoBy(photoId: String): Photo? = indexMap[photoId]?.let { currentList[it] }
 
         internal fun setSelectionTracker(selectionTracker: SelectionTracker<String>) { this.selectionTracker = selectionTracker }
         internal fun getPhotoId(position: Int): String = currentList[position].id
-        internal fun getPhotoPosition(photoId: String): Int = currentList.indexOfLast { it.id == photoId }
+        internal fun getPhotoPosition(photoId: String): Int = indexMap[photoId] ?: -1
         internal fun filter(query: String) {
             if (query.isEmpty()) try { setAlbum(AlbumWithPhotos(this.album, this.photos)) } catch (_: UninitializedPropertyAccessException) {}
             else {
