@@ -674,6 +674,7 @@ class GalleryFragment: Fragment() {
         val medias: StateFlow<List<GalleryMedia>?> = _medias.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
         val trash: StateFlow<List<GalleryMedia>?> = _local.map { it.filter { item -> item.folder == TRASH_FOLDER }}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
         fun mediasInFolder(folderName: String): StateFlow<List<GalleryMedia>?> = _medias.map { it?.filter { item -> item.folder == folderName }}.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+        private var indexMap: Map<String, Int> = mapOf()
 
         init {
             viewModelScope.launch(Dispatchers.IO) {
@@ -684,7 +685,7 @@ class GalleryFragment: Fragment() {
                         if (_showArchive.value != ARCHIVE_OFF && _showArchive.value != REFRESHING_GALLERY) {
                             archiveMedia?.let {
                                 if (archiveMedia.isNotEmpty()) {
-                                    // Deep copy to create a brand new list for combining local and archive items
+                                    // Deep copy to create a brand-new list for combining local and archive items
                                     val combinedList = archiveMedia.map { it.copy(media = it.media.copy(photo = it.media.photo.copy())) }.toMutableList()
 
                                     if (localMedia.isNotEmpty()) {
@@ -720,7 +721,10 @@ class GalleryFragment: Fragment() {
                                 localMedia.map { it.copy(media = it.media.copy(photo = it.media.photo.copy())) }
                             }
                         } else localMedia.map { it.copy(media = it.media.copy(photo = it.media.photo.copy())) }
-                    }.collect { result -> _medias.emit(result) }
+                    }.collect { result ->
+                        _medias.emit(result)
+                        indexMap = result.mapIndexed { index, media -> media.media.photo.id to index }.toMap()
+                    }
                 }
             }
 
@@ -930,6 +934,7 @@ class GalleryFragment: Fragment() {
             uri.toString().let { uriString ->
                 setCurrentPhotoId(uriString)
                 _medias.value = listOf(GalleryMedia(GalleryMedia.IS_LOCAL, uriString, NCShareViewModel.RemotePhoto(photo), "", uriString))
+                indexMap = mapOf(_medias.value!![0].media.photo.id to 0)
             }
         }
 
@@ -989,8 +994,12 @@ class GalleryFragment: Fragment() {
             }
         }
 
+/*
         fun getPhotoById(id: String): NCShareViewModel.RemotePhoto? = _medias.value?.find { it.media.photo.id == id }?.media
         fun getGalleryMediaById(id: String): GalleryMedia? = _medias.value?.find { it.media.photo.id == id }
+*/
+        fun getPhotoById(id: String): NCShareViewModel.RemotePhoto? = getGalleryMediaById(id)?.media
+        fun getGalleryMediaById(id: String): GalleryMedia? = _medias.value?.let { list -> indexMap[id]?.let { index -> list[index] }}
 
         private val _additions = MutableSharedFlow<List<String>>()
         val additions: SharedFlow<List<String>> = _additions
