@@ -1,0 +1,2 @@
+* Fixed potential ANR when selecting and processing a large number of media files in Gallery or an album
+* Various improvements and bug fixes

@@ -1,3 +1,7 @@
+## Version 2.11.3
+* Fixed potential ANR when selecting and processing a large number of media files in Gallery or an album
+* Various improvements and bug fixes
+
 ## Version 2.11.2
 * Various improvements and bug fixes
 

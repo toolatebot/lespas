@@ -1,0 +1,2 @@
+* Corrigimos um problema de ANR que ocorria ao selecionar e processar um grande número de arquivos de mídia na Galeria ou em um álbum
+* Várias melhorias e correções de bugs

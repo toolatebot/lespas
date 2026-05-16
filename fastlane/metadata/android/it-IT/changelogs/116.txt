@@ -1,0 +1,2 @@
+* Risolto un potenziale problema di ANR durante la selezione e l'elaborazione di un numero elevato di file multimediali nella Galleria o in un album
+* Vari miglioramenti e correzioni di bug

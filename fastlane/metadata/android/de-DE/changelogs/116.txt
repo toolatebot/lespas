@@ -1,0 +1,2 @@
+* Ein potenzielles ANR-Problem bei der Auswahl und Bearbeitung einer großen Anzahl von Mediendateien in der Galerie oder einem Album wurde behoben
+* Verschiedene Verbesserungen und Fehlerbehebungen
