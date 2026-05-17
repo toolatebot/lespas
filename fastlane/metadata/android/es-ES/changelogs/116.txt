@@ -1,0 +1,2 @@
+* Se ha corregido un posible error de ANR al seleccionar y procesar un gran número de archivos multimedia en la Galería o en un álbum
+* Varias mejoras y correcciones de errores
