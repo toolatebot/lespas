@@ -1110,7 +1110,10 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                 true
             }
             R.id.select_all -> {
-                selectionTracker.setItemsSelected(mAdapter.currentList.map { it.id }, true)
+                selectionTracker.setItemsSelected(
+                    (if (currentQuery.isEmpty()) mAdapter.currentList.drop(1) else mAdapter.currentList).map { it.id },
+                    true
+                )
                 true
             }
             R.id.edit_media-> {
@@ -1387,8 +1390,8 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                 mutableListOf<Photo>().let { photos ->
                     // Add album cover at the top of photo list, clear latitude property so that it won't be included in map related function
                     // set id to album's id to avoid duplication with the photo itself and to facilitate scroll to top after sort
-                    // set albumId to album's name, so that album name changes can be updated
-                    album.album.run { photos.add(coverPhoto.copy(id = album.album.id, albumId = album.album.name, bearing = album.album.coverBaseline.toDouble(), latitude = Photo.NO_GPS_DATA)) }
+                    // set albumId to album's name, so that album name changes can trigger UI updated
+                    photos.add(coverPhoto.copy(id = album.album.id, albumId = album.album.name, bearing = album.album.coverBaseline.toDouble(), latitude = Photo.NO_GPS_DATA))
 
                     this.photos = Tools.sortPhotos(album.photos, album.album.sortOrder)
                     photos.addAll(this.photos)
@@ -1430,6 +1433,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
             else {
                 this.photos.filter { it.name.substringBeforeLast('.').indexOf(query, 0, true) != -1 }.let { filtered ->
                     submitList(filtered)
+                    indexMap = filtered.mapIndexed { index, photo -> photo.id to index }.toMap()
                 }
             }
         }

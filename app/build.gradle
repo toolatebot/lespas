@@ -33,8 +33,8 @@ android {
     defaultConfig {
         minSdk 25
         targetSdk 36
-        versionCode 116
-        versionName '2.11.3'
+        versionCode 117
+        versionName '2.11.4'
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -121,12 +121,12 @@ dependencies {
 
     // Kotlin components
     implementation 'androidx.work:work-runtime-ktx:2.11.2'
-    def coroutineVersion = '1.10.2'
+    def coroutineVersion = '1.11.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
 
     // Other UI components
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
@@ -136,7 +136,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
 
     // Media3
-    def media3_version = "1.10.0"
+    def media3_version = "1.10.1"
     implementation "androidx.media3:media3-exoplayer:$media3_version"
     implementation "androidx.media3:media3-datasource-okhttp:$media3_version"
     implementation "androidx.media3:media3-ui:$media3_version"
