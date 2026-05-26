@@ -771,7 +771,7 @@ class AlbumFragment : Fragment(), ActionMode.Callback {
             // Put gallery album at the top if need
             if (showGallery && currentFilter.isEmpty()) add(0, galleryAlbum)
 
-            mAdapter.submitList(this) { callback() }
+            mAdapter.setAlbums(this) { callback() }
         }
     }
 
@@ -827,6 +827,7 @@ class AlbumFragment : Fragment(), ActionMode.Callback {
     ): ListAdapter<Album, AlbumListAdapter.AlbumViewHolder>(AlbumDiffCallback()) {
         private var recipients = emptyList<NCShareViewModel.ShareByMe>()
         private lateinit var selectionTracker: SelectionTracker<String>
+        private var indexMap = mapOf<String, Int>()
 
         inner class AlbumViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             private var currentAlbum = Album(lastModified = LocalDateTime.MIN)
@@ -937,6 +938,12 @@ class AlbumFragment : Fragment(), ActionMode.Callback {
             super.onDetachedFromRecyclerView(recyclerView)
         }
 
+        internal fun setAlbums(albums: List<Album>, callback: Runnable?) {
+            submitList(albums)
+            indexMap = albums.mapIndexed { index, album -> album.id to index }.toMap()
+            callback?.run()
+        }
+
         internal fun setRecipients(recipients: List<NCShareViewModel.ShareByMe>) {
             this.recipients = recipients
             for (recipient in recipients) { notifyItemChanged(currentList.indexOfFirst { it.id == recipient.fileId }) }
@@ -945,16 +952,16 @@ class AlbumFragment : Fragment(), ActionMode.Callback {
         internal fun setGalleryAlbum(galleryAlbum: Album) {
             mutableListOf<Album>().run {
                 addAll(currentList)
-                if (size > 0) removeAt(0)
+                if (isNotEmpty() && first().id == GalleryFragment.FROM_DEVICE_GALLERY) removeAt(0)
                 add(0, galleryAlbum)
-                submitList(this)
+                setAlbums(this, null)
             }
         }
 
-        internal fun getItemBySelectionKey(key: String): Album? = currentList.find { it.id == key }
+        internal fun getItemBySelectionKey(key: String): Album? = indexMap[key]?.let { currentList[it] }
         internal fun setSelectionTracker(selectionTracker: SelectionTracker<String>) { this.selectionTracker = selectionTracker }
         private fun getAlbumId(position: Int): String = currentList[position].id
-        private fun getPosition(key: String): Int = currentList.indexOfFirst { it.id == key }
+        private fun getPosition(key: String): Int = indexMap[key] ?: -1
         internal fun getAlbumRecipients(id: String): NCShareViewModel.ShareByMe? = recipients.find { it.fileId == id }
 
         class AlbumKeyProvider(private val adapter: AlbumListAdapter): ItemKeyProvider<String>(SCOPE_CACHED) {
@@ -994,9 +1001,7 @@ class AlbumFragment : Fragment(), ActionMode.Callback {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            //requireArguments().getParcelableArrayList<Album>(KEY_ALBUMS)?.apply { hiddenAdapter.submitList(this.toMutableList()) }
             requireArguments().parcelableArrayList<Album>(KEY_ALBUMS)?.apply { hiddenAdapter.submitList(this.toMutableList()) }
-
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
