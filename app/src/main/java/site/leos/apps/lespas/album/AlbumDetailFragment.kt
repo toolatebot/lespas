@@ -1110,7 +1110,10 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                 true
             }
             R.id.select_all -> {
-                selectionTracker.setItemsSelected(mAdapter.currentList.map { it.id }, true)
+                selectionTracker.setItemsSelected(
+                    (if (currentQuery.isEmpty()) mAdapter.currentList.drop(1) else mAdapter.currentList).map { it.id },
+                    true
+                )
                 true
             }
             R.id.edit_media-> {
