@@ -135,7 +135,7 @@ class SearchLauncherFragment : Fragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        categoryView = view.findViewById<RecyclerView?>(R.id.category_list).apply {
+        categoryView = view.findViewById<RecyclerView>(R.id.category_list)!!.apply {
             // Avoid window inset overlapping
             ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
                 val displayCutoutInset = insets.getInsets(WindowInsetsCompat.Type.displayCutout())

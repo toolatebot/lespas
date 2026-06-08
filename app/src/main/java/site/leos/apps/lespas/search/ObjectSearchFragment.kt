@@ -89,7 +89,7 @@ class ObjectSearchFragment : Fragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        searchResultRecyclerView = view.findViewById<RecyclerView?>(R.id.photo_grid).apply {
+        searchResultRecyclerView = view.findViewById<RecyclerView>(R.id.photo_grid)!!.apply {
             adapter = searchResultAdapter
 
             addItemDecoration(LesPasEmptyView(ContextCompat.getDrawable(requireContext(),

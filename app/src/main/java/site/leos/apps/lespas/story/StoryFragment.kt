@@ -374,7 +374,7 @@ class StoryFragment : Fragment() {
             }
         })
 
-        controlFAB = view.findViewById<FloatingActionButton?>(R.id.fab).apply {
+        controlFAB = view.findViewById<FloatingActionButton>(R.id.fab)!!.apply {
             setOnClickListener {
                 when(animationState) {
                     STATE_ENDED -> {

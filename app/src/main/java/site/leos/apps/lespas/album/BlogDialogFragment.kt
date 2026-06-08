@@ -145,7 +145,7 @@ class BlogDialogFragment: LesPasDialogFragment(R.layout.fragment_blog_dialog, MA
         }
 
         themeBackground = view.findViewById(R.id.background)
-        themeChoice = view.findViewById<MaterialButtonToggleGroup?>(R.id.theme_options).apply {
+        themeChoice = view.findViewById<MaterialButtonToggleGroup>(R.id.theme_options).apply {
             addOnButtonCheckedListener { _, _, _ -> resumePost() }
         }
         container = view.findViewById(R.id.container)
@@ -219,7 +219,7 @@ class BlogDialogFragment: LesPasDialogFragment(R.layout.fragment_blog_dialog, MA
             }
         }
 
-        photoList = view.findViewById<RecyclerView?>(R.id.photo_grid).apply {
+        photoList = view.findViewById<RecyclerView>(R.id.photo_grid)!!.apply {
             adapter = photoAdapter
 
             selectionTracker = SelectionTracker.Builder(

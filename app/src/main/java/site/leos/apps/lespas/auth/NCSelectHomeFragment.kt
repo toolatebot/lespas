@@ -38,7 +38,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -202,7 +201,7 @@ class NCSelectHomeFragment: Fragment() {
             }
         }
 
-        folderList = view.findViewById<RecyclerView?>(R.id.folder_grid).apply {
+        folderList = view.findViewById<RecyclerView>(R.id.folder_grid).apply {
             adapter = folderAdapter
             setBackgroundColor(serverTheme.color)
         }
@@ -362,7 +361,7 @@ class NCSelectHomeFragment: Fragment() {
                 editor.commit()
                 container.removeAllViews()
                 requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.color_primary)
-                parentFragmentManager.setFragmentResult(NCAuthenticationFragment.KEY_AUTHENTICATION_REQUEST, bundleOf(NCAuthenticationFragment.KEY_AUTHENTICATION_RESULT to true))
+                parentFragmentManager.setFragmentResult(NCAuthenticationFragment.KEY_AUTHENTICATION_REQUEST, Bundle().apply { putBoolean(NCAuthenticationFragment.KEY_AUTHENTICATION_RESULT, true) })
                 parentFragmentManager.popBackStack()
             }
         }

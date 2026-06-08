@@ -31,8 +31,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.os.bundleOf
-import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.Fade
 import androidx.transition.Slide
@@ -50,7 +48,7 @@ class CoverSettingFragment : Fragment() {
     private lateinit var root: ConstraintLayout
     private lateinit var applyButton: FloatingActionButton
     private lateinit var cropArea: ViewGroup
-    private lateinit var cropFrameGestureDetector: GestureDetectorCompat
+    private lateinit var cropFrameGestureDetector: GestureDetector
     private lateinit var layoutParams: ConstraintLayout.LayoutParams
 
     private var constraintSet = ConstraintSet()
@@ -122,9 +120,9 @@ class CoverSettingFragment : Fragment() {
         }
         constraintSet.applyTo(root)
 
-        cropFrameGestureDetector = GestureDetectorCompat(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+        cropFrameGestureDetector = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                parentFragmentManager.setFragmentResult(KEY_COVER_SETTING_RESULT, bundleOf(KEY_NEW_COVER to null))
+                parentFragmentManager.setFragmentResult(KEY_COVER_SETTING_RESULT, Bundle().apply { putParcelable(KEY_NEW_COVER, null) })
                 parentFragmentManager.popBackStack()
                 return true
             }
@@ -178,7 +176,7 @@ class CoverSettingFragment : Fragment() {
             currentPhoto.run {
                 var baseLine = ((height / drawableHeight) * (((screenHeight - frameHeight) * newBias) - upperGap)).roundToInt()
                 if (baseLine < 0) baseLine = 0
-                parentFragmentManager.setFragmentResult(KEY_COVER_SETTING_RESULT, bundleOf(KEY_NEW_COVER to Cover(id, baseLine, width, height, name, mimeType, orientation)))
+                parentFragmentManager.setFragmentResult(KEY_COVER_SETTING_RESULT, Bundle().apply { putParcelable(KEY_NEW_COVER, Cover(id, baseLine, width, height, name, mimeType, orientation)) })
             }
 
             parentFragmentManager.popBackStack()

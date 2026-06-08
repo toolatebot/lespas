@@ -54,7 +54,6 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
@@ -398,7 +397,7 @@ class GalleryFragment: Fragment() {
         parentFragmentManager.setFragmentResultListener(DESTINATION_DIALOG_REQUEST_KEY, viewLifecycleOwner) { _, result ->
             // Inform GallerySliderFragment
             childFragmentManager.findFragmentByTag(GallerySlideFragment::class.java.canonicalName)?.let {
-                childFragmentManager.setFragmentResult(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, bundleOf(DestinationDialogFragment.KEY_REMOVE_ORIGINAL to result.getBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL)))
+                childFragmentManager.setFragmentResult(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, Bundle().apply { putBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, result.getBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL)) })
             }
 
             result.parcelable<Album>(DestinationDialogFragment.KEY_TARGET_ALBUM)?.let { targetAlbum ->

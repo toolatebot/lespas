@@ -53,7 +53,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -138,7 +137,7 @@ class NCAuthenticationFragment: Fragment() {
                                 authenticateModel.fetchUserId(server, username, token, !reLogin)
                             } ?: run {
                                 // Can't parse Nextcloud server's return
-                                parentFragmentManager.setFragmentResult(KEY_AUTHENTICATION_REQUEST, bundleOf(KEY_AUTHENTICATION_RESULT to false))
+                                parentFragmentManager.setFragmentResult(KEY_AUTHENTICATION_REQUEST, Bundle().apply { putBoolean(KEY_AUTHENTICATION_RESULT, false) } )
                                 parentFragmentManager.popBackStack()
                             }
 
@@ -278,7 +277,7 @@ class NCAuthenticationFragment: Fragment() {
                         if (success) prepareCredentialAndQuit()
                         else {
                             // Can't get userId
-                            parentFragmentManager.setFragmentResult(KEY_AUTHENTICATION_REQUEST, bundleOf(KEY_AUTHENTICATION_RESULT to false))
+                            parentFragmentManager.setFragmentResult(KEY_AUTHENTICATION_REQUEST, Bundle().apply { putBoolean(KEY_AUTHENTICATION_RESULT, false) })
                             parentFragmentManager.popBackStack()
                         }
                     }

@@ -43,7 +43,6 @@ import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
@@ -194,7 +193,7 @@ class TVSliderFragment: Fragment() {
             lifecycleScope.launch(Dispatchers.IO) { imageLoaderModel.getRemotePhotoList(shared, true) }
             isShared = true
         }
-        setFragmentResult(RESULT_REQUEST_KEY, bundleOf(KEY_SHARED to isShared))
+        setFragmentResult(RESULT_REQUEST_KEY, Bundle().apply { putBoolean(KEY_SHARED, isShared) })
 
         requireActivity().onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
