@@ -108,7 +108,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$roomVersion"
 
     // Lifecycle components
-    def lifecycleVersion = "2.10.0"
+    def lifecycleVersion = "2.11.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
@@ -139,7 +139,7 @@ dependencies {
     // Chris Banes PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.4.0'
     //implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     // Muzei api
