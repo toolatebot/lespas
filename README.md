@@ -109,6 +109,13 @@ Les Pas uses folders to group photos on the server, e.g., each album in Les Pas 
 ### I have a huge photo collection organized in nested folders, Les Pas only supports a flat folder structure.
 There is a very cool [scripts](https://gitlab.com/steviehs/digipics) made by [@steviehs](https://github.com/steviehs) to help you out.
 
+### How do I migrate from Nextcloud Auto Upload to Les Pas?
+Les Pas backs up each selected phone gallery folder to its own location on your Nextcloud server. When you enable auto backup for a phone folder, Les Pas asks whether to back up the photos already in that folder or only new shots taken from then on.
+
+If you previously used Nextcloud Auto Upload, those files may already be on the server in a different folder layout, such as year/month subfolders. Les Pas treats the phone gallery backup as a new backup source, so choosing to back up existing photos can upload another copy when the old server layout does not match the phone folder. To avoid that traffic and duplicate storage, choose to back up only new shots, or move the existing server files into the Les Pas archive folder before managing them with Les Pas.
+
+Les Pas has three separate areas: albums use two-way sync, phone gallery backup is one-way backup to the server, and Archive stores server-side files that can be managed from the phone. Les Pas does not add its own fixed storage limit; server storage is limited by your Nextcloud quota, while local device usage depends on app private storage, cache, and whether albums are local or remote.
+
 ### Why does Les Pas use a lot of storage space?
 If you set the album as Local Album, Les Pas stores photos in its app private storage, so if you have a large collection of photos, you will find that it uses a lot of storage space in Android's settings menu.<br>
 There are two reasons why Les Pas uses private storage. First, Android introduced Scope Storage Policy recently, highly recommending apps to stay out of the Share Storage Area. Second, storing photos in the app's private storage area can prevent scanning of malicious apps, and uploading your photo secretly in the background. Yes, they love your pictures so much, especially those with your face in them.<br>
