@@ -97,7 +97,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation 'androidx.core:core-ktx:1.19.0'
     implementation 'androidx.activity:activity-ktx:1.13.0'
-    implementation 'androidx.fragment:fragment-ktx:1.8.9'
+    implementation 'androidx.fragment:fragment-ktx:1.9.0'
 
     // Room components
     def roomVersion = "2.8.4"
@@ -121,7 +121,7 @@ dependencies {
 
     // Other UI components
     implementation 'com.google.android.material:material:1.14.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.recyclerview:recyclerview-selection:1.2.0'
@@ -130,7 +130,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
 
     // Media3
-    def media3_version = "1.10.1"
+    def media3_version = "1.11.0"
     implementation "androidx.media3:media3-exoplayer:$media3_version"
     implementation "androidx.media3:media3-datasource-okhttp:$media3_version"
     implementation "androidx.media3:media3-ui:$media3_version"
@@ -139,7 +139,7 @@ dependencies {
     // Chris Banes PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:5.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     //implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     // Muzei api
