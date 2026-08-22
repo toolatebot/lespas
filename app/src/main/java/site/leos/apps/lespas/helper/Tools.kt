@@ -648,6 +648,18 @@ object Tools {
         }
     }
 
+    fun setSystemBarColor(window: Window, color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+                view.setBackgroundColor(color)
+                insets
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.statusBarColor = color
+        }
+    }
+
     //fun prepareShareOutIntent(context: Context, uris: List<Uri>, mimeType: String, action: String): Intent = Intent.createChooser(
     fun prepareShareOutIntent(uris: List<Uri>, mimeType: String): Intent = Intent.createChooser(
         Intent().apply {

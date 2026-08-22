@@ -318,7 +318,8 @@ class NCAuthenticationFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!reLogin) requireActivity().window.statusBarColor = serverTheme.color
+        //if (!reLogin) requireActivity().window.statusBarColor = serverTheme.color
+        if (!reLogin) Tools.setSystemBarColor(requireActivity().window, serverTheme.color)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -328,7 +329,8 @@ class NCAuthenticationFragment: Fragment() {
     }
 
     override fun onDestroyView() {
-        requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        //requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        Tools.setSystemBarColor(requireActivity().window, Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary))
         authWebpage.stopLoading()
         super.onDestroyView()
     }

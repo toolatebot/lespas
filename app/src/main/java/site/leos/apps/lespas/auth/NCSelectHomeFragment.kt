@@ -210,7 +210,8 @@ class NCSelectHomeFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().window.statusBarColor = serverTheme.color
+        //requireActivity().window.statusBarColor = serverTheme.color
+        Tools.setSystemBarColor(requireActivity().window, serverTheme.color)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -220,7 +221,8 @@ class NCSelectHomeFragment: Fragment() {
     }
 
     override fun onDestroyView() {
-        requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        //requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        Tools.setSystemBarColor(requireActivity().window, Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary))
         super.onDestroyView()
     }
 
@@ -360,7 +362,8 @@ class NCSelectHomeFragment: Fragment() {
                 // Before quitting, notify NCLoginFragment that it can request for storage permission now
                 editor.commit()
                 container.removeAllViews()
-                requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.color_primary)
+                //requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.color_primary)
+                Tools.setSystemBarColor(requireActivity().window, ContextCompat.getColor(requireContext(), R.color.color_primary))
                 parentFragmentManager.setFragmentResult(NCAuthenticationFragment.KEY_AUTHENTICATION_REQUEST, Bundle().apply { putBoolean(NCAuthenticationFragment.KEY_AUTHENTICATION_RESULT, true) })
                 parentFragmentManager.popBackStack()
             }
