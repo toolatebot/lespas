@@ -1295,6 +1295,7 @@ class NCShareViewModel(application: Application): AndroidViewModel(application) 
     private val groupAvatar: Drawable by lazy { ContextCompat.getDrawable(application, R.drawable.ic_baseline_group_24) as Drawable }
     private val publicAvatar: Drawable by lazy { ContextCompat.getDrawable(application, R.drawable.ic_baseline_public_24) as Drawable }
     private val placeholderBitmap: Bitmap by lazy { ContextCompat.getDrawable(application, R.drawable.ic_baseline_placeholder_24)!!.toBitmap() }
+    private val placeholderRAW: Bitmap by lazy { ContextCompat.getDrawable(application, R.drawable.ic_baseline_file_raw_box)!!.toBitmap() }
     private val loadingDrawable = ContextCompat.getDrawable(application, R.drawable.animated_loading_indicator) as AnimatedVectorDrawable
     private val loadingDrawableLV = ContextCompat.getDrawable(application, R.drawable.animated_loading_indicator_lv) as AnimatedVectorDrawable
     private val downloadDispatcher = Executors.newFixedThreadPool(3).asCoroutineDispatcher()
@@ -1389,15 +1390,21 @@ class NCShareViewModel(application: Application): AndroidViewModel(application) 
                                         // TODO: For photo captured in Sony Xperia machine, loadThumbnail will load very small size bitmap
                                         try {
                                             view.context.contentResolver.loadThumbnail(imagePhoto.photo.id.toUri(), Size(imagePhoto.photo.width / thumbnailSize, imagePhoto.photo.height / thumbnailSize), null).let { bmp ->
-                                                if (imagePhoto.photo.mimeType.substringAfter('/') in Tools.RAW_FORMAT && imagePhoto.photo.orientation != 0) {
+                                                if (Tools.isRaw(imagePhoto.photo) && imagePhoto.photo.orientation != 0) {
                                                     // Seems like system generated thumbnail of RAW format is not rotated
                                                     Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, Matrix().also { it.preRotate(imagePhoto.photo.orientation.toFloat()) }, false)
                                                 } else bmp
                                             }
                                         } catch (_: Exception) {
-                                            // loadThumbnail will failed on some format like webp, hence decode it here
                                             updateCache = true
-                                            ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, imagePhoto.photo.id.toUri())) { decoder, _, _ -> decoder.setTargetSampleSize(thumbnailSize) }
+                                            if (Tools.isRaw(imagePhoto.photo)) {
+                                                // If system can not provide thumbnail for RAW file, most likely it can not decode it neither, use placeholder file instead
+                                                placeholderRAW
+                                            }
+                                            else {
+                                                // loadThumbnail will fail on some format like webp, hence decode it here
+                                                ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, imagePhoto.photo.id.toUri())) { decoder, _, _ -> decoder.setTargetSampleSize(thumbnailSize) }
+                                            }
                                         }
                                     } else {
                                         @Suppress("DEPRECATION")
@@ -1427,7 +1434,7 @@ class NCShareViewModel(application: Application): AndroidViewModel(application) 
                                     // For local album, file available in device and already rotated to up-right position.
                                     val option = BitmapFactory.Options().apply { inSampleSize = thumbnailSize }
                                     BitmapFactory.decodeFile("${localFileFolder}/${imagePhoto.photo.id}", option)
-                                        // Fall back to read file named after image name. After snapseeding a not yet uploaded image, it's id is not the same as it's name anymore
+                                        // Fall back to read file named after image name. After snapseed, a not yet uploaded image, it's id is not the same as it's name anymore
                                         ?: run { BitmapFactory.decodeFile("${localFileFolder}/${imagePhoto.photo.name}", option) }
                                         // Fall back to remote thumbnail if anything bad happened while decoding.
                                         ?: run { getRemoteThumbnail(coroutineContext.job, imagePhoto, type) }
@@ -1742,7 +1749,9 @@ class NCShareViewModel(application: Application): AndroidViewModel(application) 
                     job.ensureActive()
                     BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply { inSampleSize = if (type == TYPE_GRID) 2 else 1 })
                 }
-            } catch (e: Exception) { null }
+            } catch (_: Exception) {
+                if (Tools.isRaw(imagePhoto.photo)) placeholderRAW else null
+            }
         }
 
         bitmap ?: run {
