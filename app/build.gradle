@@ -25,7 +25,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        minSdk 25
+        minSdk 26
         targetSdk 36
         versionCode 117
         versionName '2.11.4'
@@ -156,7 +156,7 @@ dependencies {
     implementation 'com.google.zxing:zxingorg:3.5.4'
 
     // Jackson for faster json string processing
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.22.2'
 
     // Panorama support
     implementation('com.github.hannesa2:panoramagl:1.13') {

@@ -377,7 +377,7 @@ class NCSelectHomeFragment: Fragment() {
             fun bind(name: String) {
                 with(tvName) {
                     text = name
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { tooltipText = name }
+                    tooltipText = name
                 }
             }
         }

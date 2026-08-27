@@ -191,18 +191,20 @@ class GallerySlideFragment : Fragment() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
-                    if (state == ViewPager2.SCROLL_STATE_SETTLING) handler.post(hideBottomControls)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && state == ViewPager2.SCROLL_STATE_IDLE) mediaViewPager.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
-                        if (this is PhotoView) {
-                            if (getTag(R.id.HDR_TAG) as Boolean? == true) {
-                                window.colorMode = ActivityInfo.COLOR_MODE_HDR
-                                if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
-                            }
-                            else {
-                                window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                                if (isAndroid15) window.desiredHdrHeadroom = 0f
-                            }
-                        } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                    when(state) {
+                        ViewPager2.SCROLL_STATE_SETTLING -> handler.post(hideBottomControls)
+                        ViewPager2.SCROLL_STATE_IDLE -> mediaViewPager.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                            if (this is PhotoView) {
+                                if (getTag(R.id.HDR_TAG) as Boolean? == true) {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_HDR
+                                    if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
+                                }
+                                else {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                                    if (isAndroid15) window.desiredHdrHeadroom = 0f
+                                }
+                            } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                        }
                     }
                 }
 
@@ -257,7 +259,7 @@ class GallerySlideFragment : Fragment() {
                 MetaDataDialogFragment.newInstance(
                     media = mediaAdapter.getPhotoAt(mediaViewPager.currentItem),
                     hasSizeInfo = mediaAdapter.getGalleryMediaAt(mediaViewPager.currentItem).isRemote(),
-                    isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                    isHDR = window.colorMode == ActivityInfo.COLOR_MODE_HDR
                 ).show(parentFragmentManager, INFO_DIALOG)
             }
         }
@@ -265,7 +267,7 @@ class GallerySlideFragment : Fragment() {
             if (folderArgument == GalleryFragment.TRASH_FOLDER) {
                 setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_restore_from_trash_24))
                 getString(R.string.action_undelete).let { buttonText ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) tooltipText = buttonText
+                    tooltipText = buttonText
                     contentDescription = buttonText
                 }
             }

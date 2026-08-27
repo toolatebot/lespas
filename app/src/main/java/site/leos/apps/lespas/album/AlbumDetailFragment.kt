@@ -563,10 +563,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                                 val cr = requireActivity().contentResolver
                                 val clipData = ClipData.newUri(cr, "", uris[0])
                                 for (i in 1 until uris.size) {
-                                    if (isActive) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) clipData.addItem(cr, ClipData.Item(uris[i]))
-                                        else clipData.addItem(ClipData.Item(uris[i]))
-                                    }
+                                    if (isActive) clipData.addItem(cr, ClipData.Item(uris[i]))
                                 }
 
                                 if (isActive) startActivity(Intent.createChooser(Intent().apply {

@@ -237,7 +237,7 @@ class StoryFragment : Fragment() {
                 // Start the show by setting the caption textview
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     if (animationState == STATE_STARTED) captionTextView.text = pAdapter.getCaption(slider.currentItem)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                    slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
                         if (this is PhotoView) {
                             if (getTag(R.id.HDR_TAG) as Boolean? == true) {
                                 window.colorMode = ActivityInfo.COLOR_MODE_HDR
