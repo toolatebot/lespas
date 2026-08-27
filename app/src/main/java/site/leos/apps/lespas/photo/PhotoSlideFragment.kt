@@ -114,6 +114,7 @@ class PhotoSlideFragment : Fragment() {
     //private var previousTitleBarDisplayOption = 0
 
     private lateinit var controlsContainer: LinearLayout
+    private lateinit var navigationBarBackgound: LinearLayout
     private lateinit var removeButton: Button
     private lateinit var coverButton: Button
     private lateinit var useAsButton: Button
@@ -402,6 +403,14 @@ class PhotoSlideFragment : Fragment() {
             }
             insets
         }
+
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
+            insets
+        }
+
 
         removeButton = view.findViewById(R.id.remove_button)
         coverButton = view.findViewById(R.id.cover_button)

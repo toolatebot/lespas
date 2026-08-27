@@ -35,6 +35,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
@@ -82,6 +83,7 @@ import java.util.Locale
 class GallerySlideFragment : Fragment() {
     private lateinit var mediaAdapter: MediaSlideAdapter
     private lateinit var mediaViewPager: ViewPager2
+    private lateinit var navigationBarBackgound: LinearLayoutCompat
     private lateinit var controlsContainer: ConstraintLayout
     private lateinit var tvPath: TextView
     private lateinit var tvDate: TextView
@@ -251,6 +253,13 @@ class GallerySlideFragment : Fragment() {
                     leftMargin = systemBar.left + displayCutout.left
                 }
             }
+            insets
+        }
+
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
             insets
         }
 

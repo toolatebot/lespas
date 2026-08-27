@@ -73,6 +73,7 @@ class ObjectSearchSlideFragment : Fragment() {
     private var previousOrientationSetting = 0
     private var autoRotate = false
 
+    private lateinit var navigationBarBackgound: LinearLayout
     private lateinit var controlsContainer: LinearLayout
     private lateinit var captionArea: LinearLayout
     private lateinit var captionTextView: TextView
@@ -202,6 +203,14 @@ class ObjectSearchSlideFragment : Fragment() {
             }
             insets
         }
+
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
+            insets
+        }
+
         captionArea = view.findViewById(R.id.caption_area)
         captionTextView = view.findViewById(R.id.caption)
         view.findViewById<Button>(R.id.info_button).run {
