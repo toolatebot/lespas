@@ -277,7 +277,7 @@ class PhotoSlideFragment : Fragment() {
 
                                             // Remove editor output file if running on Android 12 or above and Manager Media role has been assigned
                                             if (sp.getBoolean(getString(R.string.remove_editor_output_pref_key), false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MediaStore.canManageMedia(requireContext()))
-                                                deleteMediaLauncher.launch(IntentSenderRequest.Builder(MediaStore.createDeleteRequest(requireContext().contentResolver, arrayListOf(uri))).setFillInIntent(null).build())
+                                                try { deleteMediaLauncher.launch(IntentSenderRequest.Builder(MediaStore.createDeleteRequest(requireContext().contentResolver, arrayListOf(uri))).setFillInIntent(null).build()) } catch (_: Exception) {}
                                         }
                                     }
                                 }
