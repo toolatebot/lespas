@@ -45,8 +45,6 @@ import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Fade
-import androidx.transition.TransitionManager
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.panoramagl.PLManager
@@ -76,7 +74,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
     private var forwardMessage: TextView? = null
     private var rewindMessage: TextView? = null
 
-    private val handler = Handler(context.mainLooper)
+    private val motionPictureHandler = Handler(context.mainLooper)
+    private val videoControlHandler = Handler(context.mainLooper)
     private val hideSettingCallback = Runnable { knobLayout?.isVisible = false }
     private val hideProgressCallback = Runnable { currentVideoView?.hideController() }
     private val hideForwardMessageCallback = Runnable { forwardMessage?.isVisible = false }
@@ -96,8 +95,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
                     if (currentVideoView?.isControllerFullyVisible == false) {
                         currentVideoView?.showController()
                         cl(true)
-                        handler.removeCallbacks(hideProgressCallback)
-                        handler.postDelayed(hideProgressCallback, 3000)
+                        videoControlHandler.removeCallbacks(hideProgressCallback)
+                        videoControlHandler.postDelayed(hideProgressCallback, 3000)
                         return true
                     }
                     return false
@@ -108,14 +107,14 @@ abstract class SeamlessMediaSliderAdapter<T>(
                         playerViewModel?.skip(-5)
                         rewindMessage?.isVisible = true
                         forwardMessage?.isVisible = false
-                        handler.removeCallbacks(hideRewindMessageCallback)
-                        handler.postDelayed(hideRewindMessageCallback, 1000)
+                        videoControlHandler.removeCallbacks(hideRewindMessageCallback)
+                        videoControlHandler.postDelayed(hideRewindMessageCallback, 1000)
                     } else {
                         playerViewModel?.skip(5)
                         forwardMessage?.isVisible = true
                         rewindMessage?.isVisible = false
-                        handler.removeCallbacks(hideForwardMessageCallback)
-                        handler.postDelayed(hideForwardMessageCallback, 1000)
+                        videoControlHandler.removeCallbacks(hideForwardMessageCallback)
+                        videoControlHandler.postDelayed(hideForwardMessageCallback, 1000)
                     }
                     return true
                 }
@@ -138,8 +137,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
                                 knobPosition?.progress = (playerViewModel!!.getBrightness() * 100).toInt()
                             }
 
-                            handler.removeCallbacks(hideSettingCallback)
-                            handler.postDelayed(hideSettingCallback, 1000)
+                            videoControlHandler.removeCallbacks(hideSettingCallback)
+                            videoControlHandler.postDelayed(hideSettingCallback, 1000)
                         }
                         return true
                     } else return false
@@ -220,6 +219,9 @@ abstract class SeamlessMediaSliderAdapter<T>(
     
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
+
+        motionPictureHandler.removeCallbacksAndMessages(null)
+
         when (holder) {
             is SeamlessMediaSliderAdapter<*>.VideoViewHolder -> {
                 playerViewModel?.resume(holder.videoView, holder.videoUri)
@@ -233,7 +235,7 @@ abstract class SeamlessMediaSliderAdapter<T>(
                     rewindMessage = holder.rewindMessage
                 }
 
-                handler.removeCallbacksAndMessages(null)
+                videoControlHandler.removeCallbacksAndMessages(null)
                 //clickListener(false)
             }
 
@@ -252,6 +254,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
                 // Stop panorama view from flicking
                 holder.pvContainer.dispatchTouchEvent(MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis()+50, MotionEvent.ACTION_DOWN, 0.0f, 0.0f, 0))
             }
+
+            is SeamlessMediaSliderAdapter<*>.PhotoViewHolder -> if (isTV && holder.isMotionPhoto) { motionPictureHandler.postDelayed({ holder.playMotionPhoto() }, 3000) }
         }
     }
 
@@ -267,7 +271,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
                     holder.rewindMessage.isVisible = false
                 }
             }
-            is SeamlessMediaSliderAdapter<*>.PanoramaViewHolder-> { holder.plManager.onPause() }
+            is SeamlessMediaSliderAdapter<*>.PanoramaViewHolder -> holder.plManager.onPause()
+            is SeamlessMediaSliderAdapter<*>.PhotoViewHolder -> if (isTV && holder.isMotionPhoto) { playerViewModel?.pause(holder.getVideoItem()) }
         }
 
         super.onViewDetachedFromWindow(holder)
@@ -294,7 +299,8 @@ abstract class SeamlessMediaSliderAdapter<T>(
             }
         }
 
-        handler.removeCallbacksAndMessages(null)
+        motionPictureHandler.removeCallbacksAndMessages(null)
+        videoControlHandler.removeCallbacksAndMessages(null)
 
         super.onDetachedFromRecyclerView(recyclerView)
     }
@@ -305,12 +311,12 @@ abstract class SeamlessMediaSliderAdapter<T>(
     @SuppressLint("ClickableViewAccessibility")
     inner class PhotoViewHolder(itemView: View, private val displayWidth: Int): RecyclerView.ViewHolder(itemView) {
         val ivMedia: PhotoView
+        val pvMotionPhotoPlayerView: PlayerView
         private val ivMotionPhotoPlayButton: AppCompatImageView
-        private val pvMotionPhotoPlayerView: PlayerView
         private var baseWidth = 0f
         private var currentWidth = 0
         private var edgeDetected = 0
-        private var isMotionPhoto = false
+        var isMotionPhoto = false
 
         init {
             ivMedia = itemView.findViewById<PhotoView>(R.id.media).apply {
@@ -366,23 +372,28 @@ abstract class SeamlessMediaSliderAdapter<T>(
                 ViewCompat.setTransitionName(this, transitionName)
             }
 
-            if (isMotionPhoto) pvMotionPhotoPlayerView.setOnTouchListener { v, event ->
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> v.parent?.requestDisallowInterceptTouchEvent(true)
-                    MotionEvent.ACTION_UP -> v.parent?.requestDisallowInterceptTouchEvent(false)
-                }
+            (isMotionPhoto && !isTV).let { setupMotionPicture ->
+                ivMotionPhotoPlayButton.isVisible = setupMotionPicture
 
-                v.isVisible
-            }
-            ivMotionPhotoPlayButton.apply {
-                isVisible = isMotionPhoto && !isTV
-                if (isMotionPhoto) setOnClickListener { if (isVisible) playMotionPhoto() }
+                if (setupMotionPicture) {
+                    pvMotionPhotoPlayerView.setOnTouchListener { v, event ->
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> v.parent?.requestDisallowInterceptTouchEvent(true)
+                            MotionEvent.ACTION_UP -> v.parent?.requestDisallowInterceptTouchEvent(false)
+                        }
+
+                        v.isVisible
+                    }
+
+                    ivMotionPhotoPlayButton.setOnClickListener { if (ivMotionPhotoPlayButton.isVisible) playMotionPhoto() }
+                }
             }
 
             this.isMotionPhoto = isMotionPhoto
         }
 
         fun getPhotoView() = ivMedia
+        fun getVideoItem(): Uri = getVideoItem(bindingAdapterPosition).uri
 
         private fun touchHandler(photoView: PhotoView) {
             photoView.run {
@@ -393,7 +404,7 @@ abstract class SeamlessMediaSliderAdapter<T>(
             }
         }
 
-        private fun playMotionPhoto() {
+        fun playMotionPhoto() {
             playerViewModel?.run {
                 addListener( object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -406,7 +417,7 @@ abstract class SeamlessMediaSliderAdapter<T>(
                             }
                             Player.STATE_READY -> {
                                 if (!isTV) {
-                                    TransitionManager.beginDelayedTransition(ivMotionPhotoPlayButton.parent as ViewGroup, Fade().apply { duration = 200 })
+                                    //TransitionManager.beginDelayedTransition(ivMotionPhotoPlayButton.parent as ViewGroup, Fade().apply { duration = 200 })
                                     ivMotionPhotoPlayButton.isVisible = false
                                     (ivMotionPhotoPlayButton.drawable as AnimatedVectorDrawable).reset()
                                 }
@@ -414,7 +425,7 @@ abstract class SeamlessMediaSliderAdapter<T>(
                                 ivMedia.isVisible = false
                             }
                             Player.STATE_ENDED -> {
-                                TransitionManager.beginDelayedTransition(pvMotionPhotoPlayerView.parent as ViewGroup, Fade().apply { duration = 300 })
+                                //TransitionManager.beginDelayedTransition(pvMotionPhotoPlayerView.parent as ViewGroup, Fade().apply { duration = 300 })
                                 ivMedia.isVisible = true
                                 if (!isTV) ivMotionPhotoPlayButton.isVisible = true
                                 pvMotionPhotoPlayerView.isVisible = false
@@ -422,6 +433,21 @@ abstract class SeamlessMediaSliderAdapter<T>(
                                 playerViewModel.removeListener(this)
                                 pvMotionPhotoPlayerView.player = null
                             }
+                        }
+                    }
+
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        super.onIsPlayingChanged(isPlaying)
+
+                        // Clean up after motion picture finish playing
+                        if (!isPlaying && isTV) {
+                            //TransitionManager.beginDelayedTransition(pvMotionPhotoPlayerView.parent as ViewGroup, Fade().apply { duration = 300 })
+                            ivMedia.isVisible = true
+                            if (!isTV) ivMotionPhotoPlayButton.isVisible = true
+                            pvMotionPhotoPlayerView.isVisible = false
+                            playerViewModel.rewind()
+                            playerViewModel.removeListener(this)
+                            pvMotionPhotoPlayerView.player = null
                         }
                     }
                 })
