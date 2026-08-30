@@ -211,7 +211,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                         }
                     }
 
-                    if (mAdapter.getPhotoAt(position).mimeType.startsWith("video")) {
+                    if (mAdapter.getPhotoAt(position)?.mimeType?.startsWith("video") == true) {
                         // Transition to surface view might crash some OEM phones, like Xiaomi
                         parentFragmentManager.beginTransaction()
                             .replace(R.id.container_root, PhotoSlideFragment.newInstance(album), PhotoSlideFragment::class.java.canonicalName)
@@ -434,7 +434,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                 StorageStrategy.createStringStorage()
             ).withSelectionPredicate(object : SelectionTracker.SelectionPredicate<String>() {
                 override fun canSetStateForKey(key: String, nextState: Boolean): Boolean = waitingMsg?.isShownOrQueued != true && key.isNotEmpty()
-                override fun canSetStateAtPosition(position: Int, nextState: Boolean): Boolean = waitingMsg?.isShownOrQueued != true && (position != 0 || mAdapter.getPhotoAt(0).id != album.id)
+                override fun canSetStateAtPosition(position: Int, nextState: Boolean): Boolean = waitingMsg?.isShownOrQueued != true && (position != 0 || mAdapter.getPhotoAt(0)?.id != album.id)
                 override fun canSelectMultiple(): Boolean = true
             }).build().apply {
                 addObserver(object : SelectionTracker.SelectionObserver<String>() {
@@ -504,8 +504,8 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
                             if ((findLastCompletelyVisibleItemPosition() < mAdapter.itemCount - 1) || (findFirstCompletelyVisibleItemPosition() > 0)) {
                                 hideHandler.removeCallbacksAndMessages(null)
                                 dateIndicator.let {
-                                    it.text = if (album.sortOrder % 100 == Album.BY_NAME_ASC || album.sortOrder % 100 == Album.BY_NAME_DESC) mAdapter.getPhotoAt(findLastVisibleItemPosition()).name.take(1)
-                                    else mAdapter.getPhotoAt(findLastVisibleItemPosition()).dateTaken.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+                                    it.text = if (album.sortOrder % 100 == Album.BY_NAME_ASC || album.sortOrder % 100 == Album.BY_NAME_DESC) mAdapter.getPhotoAt(findLastVisibleItemPosition())?.name?.take(1)
+                                    else mAdapter.getPhotoAt(findLastVisibleItemPosition())?.dateTaken?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
 
                                     it.isVisible = true
                                 }
@@ -1208,7 +1208,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
 
         return GridLayoutManager(context, defaultSpanCount).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int { return if (position == 0 && mAdapter.getPhotoAt(0).id == album.id) defaultSpanCount else 1 }
+                override fun getSpanSize(position: Int): Int { return if (position == 0 && mAdapter.getPhotoAt(0)?.id == album.id) defaultSpanCount else 1 }
             }
         }
     }
@@ -1419,7 +1419,7 @@ class AlbumDetailFragment : Fragment(), ActionMode.Callback {
             this.panoramaMark = panoramaMark
         }
 
-        internal fun getPhotoAt(position: Int): Photo = currentList[position]
+        internal fun getPhotoAt(position: Int): Photo? = if (position >= 0) currentList[position] else null
         internal fun getPhotoBy(photoId: String): Photo? = indexMap[photoId]?.let { currentList[it] }
 
         internal fun setSelectionTracker(selectionTracker: SelectionTracker<String>) { this.selectionTracker = selectionTracker }
