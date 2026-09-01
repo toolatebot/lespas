@@ -43,7 +43,6 @@ import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
@@ -148,6 +147,7 @@ class TVSliderFragment: Fragment() {
     private val wordIterator: BreakIterator = BreakIterator.getWordInstance(Locale.getDefault())
     private var captionHintingAnimation = AnimatorSet()
     private var isSortedByDate = true
+    private var isHDR = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,9 +160,12 @@ class TVSliderFragment: Fragment() {
             imageLoaderModel.getResourceRoot(),
             playerViewModel,
             { on -> },
-            { media, imageView, type -> if (type != NCShareViewModel.TYPE_NULL) imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_FULL) },
-            { media, imageView, plManager, panorama -> imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_PANORAMA, plManager, panorama) },
-            { view -> imageLoaderModel.cancelSetImagePhoto(view) },
+            { media, imageView, type -> if (type != NCShareViewModel.TYPE_NULL) imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_FULL) { isHDR = imageView.getTag(R.id.HDR_TAG) as? Boolean == true }},
+            { media, imageView, plManager, panorama -> imageLoaderModel.setImagePhoto(media, imageView!!, NCShareViewModel.TYPE_PANORAMA, plManager, panorama) { isHDR = false }},
+            { view ->
+                imageLoaderModel.cancelSetImagePhoto(view)
+                isHDR = false
+            },
             { delta ->
                 if (metaPage.isVisible) toggleMeta(NCShareViewModel.RemotePhoto(Photo(dateTaken = LocalDateTime.MIN, lastModified = LocalDateTime.MIN)), true)
                 else {
@@ -194,7 +197,7 @@ class TVSliderFragment: Fragment() {
             lifecycleScope.launch(Dispatchers.IO) { imageLoaderModel.getRemotePhotoList(shared, true) }
             isShared = true
         }
-        setFragmentResult(RESULT_REQUEST_KEY, bundleOf(KEY_SHARED to isShared))
+        setFragmentResult(RESULT_REQUEST_KEY, Bundle().apply { putBoolean(KEY_SHARED, isShared) })
 
         requireActivity().onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
@@ -571,7 +574,10 @@ class TVSliderFragment: Fragment() {
                             pWidth = width
                             pHeight = height
                         }
-                        tvSize.text = if (pm.size == 0L) String.format("%sw × %sh", "$pWidth", "$pHeight") else String.format("%s, %s", Tools.humanReadableByteCountSI(pm.size), String.format("%sw × %sh", "$pWidth", "$pHeight"))
+                        var sizeString:String = if (pm.size != 0L) String.format("%s, ", Tools.humanReadableByteCountSI(pm.size)) else ""
+                        sizeString += String.format(Locale.getDefault(), "%dw × %dh", pWidth, pHeight)
+                        if (isHDR) sizeString += ", HDR"
+                        tvSize.text = sizeString
                         trSize.isVisible = true
 
                         if (pm.mfg.isNotEmpty()) {
@@ -698,7 +704,7 @@ class TVSliderFragment: Fragment() {
         override fun getVideoItem(position: Int): VideoItem = with(getItem(position)) { VideoItem("$basePath$remotePath/${photo.name}".toUri(), photo.mimeType, photo.width, photo.height, photo.id) }
         override fun getItemTransitionName(position: Int): String = getItem(position).photo.id
         override fun getItemMimeType(position: Int): String = getItem(position).photo.mimeType
-        override fun isMotionPhoto(position: Int): Boolean = false
+        override fun isMotionPhoto(position: Int): Boolean = Tools.isMotionPhoto(getItem(position).photo.shareId)
 
         override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
             super.onAttachedToRecyclerView(recyclerView)

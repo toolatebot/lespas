@@ -1,3 +1,6 @@
+## Version 2.11.5
+* Various improvements and bug fixes
+
 ## Version 2.11.4
 * Various improvements and bug fixes
 

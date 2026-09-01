@@ -31,6 +31,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -79,6 +80,7 @@ import kotlin.math.roundToInt
 
 class MetaDataDialogFragment : LesPasDialogFragment(R.layout.fragment_info_dialog, 0.8f) {
     private var mapIntent = Intent(Intent.ACTION_VIEW)
+    private lateinit var scrollView: ScrollView
     private lateinit var mapView: MapView
     private lateinit var mapButton: MaterialButton
     private lateinit var localityTextView: TextView
@@ -98,6 +100,7 @@ class MetaDataDialogFragment : LesPasDialogFragment(R.layout.fragment_info_dialo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        scrollView = view.findViewById(R.id.background)
         view.findViewById<MaterialButton>(R.id.ok_button).setOnClickListener { dismiss() }
         mapButton = view.findViewById(R.id.map_button)
         mapView = view.findViewById(R.id.map)
@@ -243,6 +246,7 @@ class MetaDataDialogFragment : LesPasDialogFragment(R.layout.fragment_info_dialo
                 invalidate()
 
                 this.isVisible = true
+                scrollView.smoothScrollBy(0, 1)
             }
 
             with(photo) {

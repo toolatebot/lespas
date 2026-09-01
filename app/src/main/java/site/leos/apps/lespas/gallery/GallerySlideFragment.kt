@@ -35,6 +35,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
@@ -82,6 +83,7 @@ import java.util.Locale
 class GallerySlideFragment : Fragment() {
     private lateinit var mediaAdapter: MediaSlideAdapter
     private lateinit var mediaViewPager: ViewPager2
+    private lateinit var navigationBarBackgound: LinearLayoutCompat
     private lateinit var controlsContainer: ConstraintLayout
     private lateinit var tvPath: TextView
     private lateinit var tvDate: TextView
@@ -191,18 +193,20 @@ class GallerySlideFragment : Fragment() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
-                    if (state == ViewPager2.SCROLL_STATE_SETTLING) handler.post(hideBottomControls)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && state == ViewPager2.SCROLL_STATE_IDLE) mediaViewPager.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
-                        if (this is PhotoView) {
-                            if (getTag(R.id.HDR_TAG) as Boolean? == true) {
-                                window.colorMode = ActivityInfo.COLOR_MODE_HDR
-                                if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
-                            }
-                            else {
-                                window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                                if (isAndroid15) window.desiredHdrHeadroom = 0f
-                            }
-                        } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                    when(state) {
+                        ViewPager2.SCROLL_STATE_SETTLING -> handler.post(hideBottomControls)
+                        ViewPager2.SCROLL_STATE_IDLE -> mediaViewPager.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                            if (this is PhotoView) {
+                                if (getTag(R.id.HDR_TAG) as Boolean? == true) {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_HDR
+                                    if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
+                                }
+                                else {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                                    if (isAndroid15) window.desiredHdrHeadroom = 0f
+                                }
+                            } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                        }
                     }
                 }
 
@@ -252,12 +256,19 @@ class GallerySlideFragment : Fragment() {
             insets
         }
 
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
+            insets
+        }
+
         view.findViewById<ImageButton>(R.id.info_button).setOnClickListener {
             if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) {
                 MetaDataDialogFragment.newInstance(
                     media = mediaAdapter.getPhotoAt(mediaViewPager.currentItem),
                     hasSizeInfo = mediaAdapter.getGalleryMediaAt(mediaViewPager.currentItem).isRemote(),
-                    isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                    isHDR = window.colorMode == ActivityInfo.COLOR_MODE_HDR
                 ).show(parentFragmentManager, INFO_DIALOG)
             }
         }
@@ -265,7 +276,7 @@ class GallerySlideFragment : Fragment() {
             if (folderArgument == GalleryFragment.TRASH_FOLDER) {
                 setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_restore_from_trash_24))
                 getString(R.string.action_undelete).let { buttonText ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) tooltipText = buttonText
+                    tooltipText = buttonText
                     contentDescription = buttonText
                 }
             }

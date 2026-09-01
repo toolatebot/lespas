@@ -82,6 +82,7 @@ import java.time.ZoneOffset
 class RemoteMediaFragment: Fragment() {
     private lateinit var window: Window
     private lateinit var controlsContainer: LinearLayoutCompat
+    private lateinit var navigationBarBackgound: LinearLayoutCompat
     private lateinit var slider: ViewPager2
     private lateinit var pAdapter: RemoteMediaAdapter
     private lateinit var captionTextView: TextView
@@ -195,18 +196,20 @@ class RemoteMediaFragment: Fragment() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
-                    if (state == ViewPager2.SCROLL_STATE_SETTLING) handler.post(hideBottomControls)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && state == ViewPager2.SCROLL_STATE_IDLE) slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
-                        if (this is PhotoView) {
-                            if (getTag(R.id.HDR_TAG) as Boolean? == true) {
-                                window.colorMode = ActivityInfo.COLOR_MODE_HDR
-                                if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
-                            }
-                            else {
-                                window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                                if (isAndroid15) window.desiredHdrHeadroom = 0f
-                            }
-                        } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                    when(state) {
+                        ViewPager2.SCROLL_STATE_SETTLING -> handler.post(hideBottomControls)
+                        ViewPager2.SCROLL_STATE_IDLE -> slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                            if (this is PhotoView) {
+                                if (getTag(R.id.HDR_TAG) as Boolean? == true) {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_HDR
+                                    if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
+                                }
+                                else {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                                    if (isAndroid15) window.desiredHdrHeadroom = 0f
+                                }
+                            } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                        }
                     }
                 }
 
@@ -231,6 +234,13 @@ class RemoteMediaFragment: Fragment() {
                     leftMargin = systemBar.left + displayCutout.left
                 }
             }
+            insets
+        }
+
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
             insets
         }
 
@@ -259,7 +269,7 @@ class RemoteMediaFragment: Fragment() {
             setOnClickListener {
                 handler.post(hideBottomControls)
                 if (parentFragmentManager.findFragmentByTag(TAG_INFO_DIALOG) == null) {
-                    MetaDataDialogFragment.newInstance(pAdapter.currentList[currentPositionModel.currentPosition.value], isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR)
+                    MetaDataDialogFragment.newInstance(pAdapter.currentList[currentPositionModel.currentPosition.value], isHDR = window.colorMode == ActivityInfo.COLOR_MODE_HDR)
                         .show(parentFragmentManager, TAG_INFO_DIALOG)
                 }
             }

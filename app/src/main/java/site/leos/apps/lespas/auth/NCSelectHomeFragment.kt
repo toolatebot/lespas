@@ -38,7 +38,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -202,7 +201,7 @@ class NCSelectHomeFragment: Fragment() {
             }
         }
 
-        folderList = view.findViewById<RecyclerView?>(R.id.folder_grid).apply {
+        folderList = view.findViewById<RecyclerView>(R.id.folder_grid).apply {
             adapter = folderAdapter
             setBackgroundColor(serverTheme.color)
         }
@@ -211,7 +210,8 @@ class NCSelectHomeFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().window.statusBarColor = serverTheme.color
+        //requireActivity().window.statusBarColor = serverTheme.color
+        Tools.setSystemBarColor(requireActivity().window, serverTheme.color)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -221,7 +221,8 @@ class NCSelectHomeFragment: Fragment() {
     }
 
     override fun onDestroyView() {
-        requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        //requireActivity().window.statusBarColor = Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary)
+        Tools.setSystemBarColor(requireActivity().window, Tools.getAttributeColor(requireContext(), android.R.attr.colorPrimary))
         super.onDestroyView()
     }
 
@@ -361,8 +362,9 @@ class NCSelectHomeFragment: Fragment() {
                 // Before quitting, notify NCLoginFragment that it can request for storage permission now
                 editor.commit()
                 container.removeAllViews()
-                requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.color_primary)
-                parentFragmentManager.setFragmentResult(NCAuthenticationFragment.KEY_AUTHENTICATION_REQUEST, bundleOf(NCAuthenticationFragment.KEY_AUTHENTICATION_RESULT to true))
+                //requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.color_primary)
+                Tools.setSystemBarColor(requireActivity().window, ContextCompat.getColor(requireContext(), R.color.color_primary))
+                parentFragmentManager.setFragmentResult(NCAuthenticationFragment.KEY_AUTHENTICATION_REQUEST, Bundle().apply { putBoolean(NCAuthenticationFragment.KEY_AUTHENTICATION_RESULT, true) })
                 parentFragmentManager.popBackStack()
             }
         }
@@ -375,7 +377,7 @@ class NCSelectHomeFragment: Fragment() {
             fun bind(name: String) {
                 with(tvName) {
                     text = name
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { tooltipText = name }
+                    tooltipText = name
                 }
             }
         }

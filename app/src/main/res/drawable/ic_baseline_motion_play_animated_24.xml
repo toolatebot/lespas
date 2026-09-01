@@ -27,13 +27,13 @@ xmlns:aapt="http://schemas.android.com/aapt">
     <path
         android:name="path"
         android:pathData="M10,16.5 L16,12 10,7.5"
-        android:fillColor="@color/bottom_control_button"
+        android:fillColor="@color/lespas_white"
         android:strokeWidth="1"/>
     <group android:name="group">
       <path
           android:name="path_1"
           android:pathData="M12,2C10.83,2 9.699,2.191 8.619,2.561L9.32,4.5C10.17,4.16 11.06,3.971 12,3.971C16.41,3.971 20.029,7.59 20.029,12C20.029,16.41 16.41,20.029 12,20.029C7.59,20.029 3.971,16.41 3.971,12C3.971,11.06 4.16,10.119 4.5,9.279L2.561,8.619C2.191,9.699 2,10.83 2,12C2,17.54 6.46,22 12,22C17.54,22 22,17.54 22,12C22,6.46 17.54,2 12,2zM5.471,3.971C4.681,3.971 3.971,4.681 3.971,5.471C3.971,6.321 4.681,7 5.471,7C6.321,7 7,6.321 7,5.471C7,4.681 6.321,3.971 5.471,3.971z"
-          android:fillColor="@color/bottom_control_button"
+          android:fillColor="@color/lespas_white"
           android:strokeWidth="1"/>
     </group>
   </vector>

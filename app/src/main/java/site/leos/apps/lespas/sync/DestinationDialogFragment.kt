@@ -42,7 +42,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.widget.TextViewCompat
@@ -126,12 +125,12 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
                         // Chosen an existing album
                         requireArguments().getString(KEY_REQUEST)?.let { requestKey ->
                             parentFragmentManager.setFragmentResult(requestKey,
-                                bundleOf(
-                                    KEY_TARGET_ALBUM to if (remoteAlbum.shareBy.isNotEmpty()) album.copy(id = Album.JOINT_ALBUM_ID, coverFileName = "${remoteAlbum.sharePath}/${album.coverFileName}", eTag = album.id) else album,
-                                    KEY_REMOVE_ORIGINAL to (copyOrMoveToggleGroup.checkedButtonId == R.id.move),
-                                    KEY_DO_ON_SERVER to remotePhotos.isNotEmpty(),
-                                    KEY_REMOTE_PHOTOS to remotePhotos
-                                )
+                                Bundle().apply {
+                                    putParcelable(KEY_TARGET_ALBUM, if (remoteAlbum.shareBy.isNotEmpty()) album.copy(id = Album.JOINT_ALBUM_ID, coverFileName = "${remoteAlbum.sharePath}/${album.coverFileName}", eTag = album.id) else album)
+                                    putBoolean(KEY_REMOVE_ORIGINAL, copyOrMoveToggleGroup.checkedButtonId == R.id.move)
+                                    putBoolean(KEY_DO_ON_SERVER, remotePhotos.isNotEmpty())
+                                    putParcelableArrayList(KEY_REMOTE_PHOTOS, ArrayList(remotePhotos))
+                                }
                             )
                         }
 
@@ -439,13 +438,15 @@ class DestinationDialogFragment : LesPasDialogFragment(R.layout.fragment_destina
             destinationModel.setEditMode(false)
 
             requireArguments().getString(KEY_REQUEST)?.let { requestKey ->
-                parentFragmentManager.setFragmentResult(requestKey, bundleOf(
-                    // Return with album id field empty, calling party will know this is a new album
-                    KEY_TARGET_ALBUM to Album(name = name, lastModified = LocalDateTime.now(), shareId = if (remoteAlbumCheckBox.isChecked) Album.REMOTE_ALBUM else Album.NULL_ALBUM),
-                    KEY_REMOVE_ORIGINAL to (copyOrMoveToggleGroup.checkedButtonId == R.id.move),
-                    KEY_DO_ON_SERVER to remotePhotos.isNotEmpty(),
-                    KEY_REMOTE_PHOTOS to remotePhotos
-                ))
+                parentFragmentManager.setFragmentResult(requestKey,
+                    Bundle().apply {
+                        // Return with album id field empty, calling party will know this is a new album
+                        putParcelable(KEY_TARGET_ALBUM, Album(name = name, lastModified = LocalDateTime.now(), shareId = if (remoteAlbumCheckBox.isChecked) Album.REMOTE_ALBUM else Album.NULL_ALBUM))
+                        putBoolean(KEY_REMOVE_ORIGINAL, copyOrMoveToggleGroup.checkedButtonId == R.id.move)
+                        putBoolean(KEY_DO_ON_SERVER, remotePhotos.isNotEmpty())
+                        putParcelableArrayList(KEY_REMOTE_PHOTOS, ArrayList(remotePhotos))
+                    }
+                )
             }
 
             dismiss()

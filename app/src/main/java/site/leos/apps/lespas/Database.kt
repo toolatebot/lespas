@@ -46,7 +46,7 @@ abstract class LespasDatabase: RoomDatabase() {
 
         fun getDatabase(context: Context): LespasDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(context, LespasDatabase::class.java, "lespas.db").fallbackToDestructiveMigration().build()
+                val instance = Room.databaseBuilder(context, LespasDatabase::class.java, "lespas.db").fallbackToDestructiveMigration(false).build()
                 INSTANCE = instance
 
                 instance

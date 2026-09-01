@@ -13,28 +13,22 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
     id 'kotlin-parcelize'
-    id 'com.google.devtools.ksp' version '2.3.2'
+    id 'com.google.devtools.ksp' version '2.3.6'
 }
 
 android {
     namespace 'site.leos.apps.lespas'
 
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 37
 
     defaultConfig {
-        minSdk 25
+        minSdk 26
         targetSdk 36
-        versionCode 117
-        versionName '2.11.4'
+        versionCode 118
+        versionName '2.11.5'
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -70,7 +64,7 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
+            //jvmTarget = JvmTarget.JVM_21
             freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         }
     }
@@ -101,9 +95,9 @@ dependencies {
 
     // Core
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
-    implementation 'androidx.core:core-ktx:1.18.0'
+    implementation 'androidx.core:core-ktx:1.19.0'
     implementation 'androidx.activity:activity-ktx:1.13.0'
-    implementation 'androidx.fragment:fragment-ktx:1.8.9'
+    implementation 'androidx.fragment:fragment-ktx:1.9.0'
 
     // Room components
     def roomVersion = "2.8.4"
@@ -114,7 +108,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$roomVersion"
 
     // Lifecycle components
-    def lifecycleVersion = "2.10.0"
+    def lifecycleVersion = "2.11.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
@@ -127,7 +121,7 @@ dependencies {
 
     // Other UI components
     implementation 'com.google.android.material:material:1.14.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.recyclerview:recyclerview-selection:1.2.0'
@@ -136,7 +130,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
 
     // Media3
-    def media3_version = "1.10.1"
+    def media3_version = "1.11.0"
     implementation "androidx.media3:media3-exoplayer:$media3_version"
     implementation "androidx.media3:media3-datasource-okhttp:$media3_version"
     implementation "androidx.media3:media3-ui:$media3_version"
@@ -145,7 +139,7 @@ dependencies {
     // Chris Banes PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     //implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     // Muzei api
@@ -162,7 +156,7 @@ dependencies {
     implementation 'com.google.zxing:zxingorg:3.5.4'
 
     // Jackson for faster json string processing
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.22.2'
 
     // Panorama support
     implementation('com.github.hannesa2:panoramagl:1.13') {

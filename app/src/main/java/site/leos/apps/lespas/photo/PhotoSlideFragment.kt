@@ -114,6 +114,7 @@ class PhotoSlideFragment : Fragment() {
     //private var previousTitleBarDisplayOption = 0
 
     private lateinit var controlsContainer: LinearLayout
+    private lateinit var navigationBarBackgound: LinearLayout
     private lateinit var removeButton: Button
     private lateinit var coverButton: Button
     private lateinit var useAsButton: Button
@@ -277,7 +278,7 @@ class PhotoSlideFragment : Fragment() {
 
                                             // Remove editor output file if running on Android 12 or above and Manager Media role has been assigned
                                             if (sp.getBoolean(getString(R.string.remove_editor_output_pref_key), false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MediaStore.canManageMedia(requireContext()))
-                                                deleteMediaLauncher.launch(IntentSenderRequest.Builder(MediaStore.createDeleteRequest(requireContext().contentResolver, arrayListOf(uri))).setFillInIntent(null).build())
+                                                try { deleteMediaLauncher.launch(IntentSenderRequest.Builder(MediaStore.createDeleteRequest(requireContext().contentResolver, arrayListOf(uri))).setFillInIntent(null).build()) } catch (_: Exception) {}
                                         }
                                     }
                                 }
@@ -337,18 +338,20 @@ class PhotoSlideFragment : Fragment() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
-                    if (state == ViewPager2.SCROLL_STATE_SETTLING) handlerBottomControl.post(hideBottomControls)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && state == ViewPager2.SCROLL_STATE_IDLE) slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
-                        if (this is PhotoView) {
-                            if (getTag(R.id.HDR_TAG) as Boolean? == true) {
-                                window.colorMode = ActivityInfo.COLOR_MODE_HDR
-                                if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
-                            }
-                            else {
-                                window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
-                                if (isAndroid15) window.desiredHdrHeadroom = 0f
-                            }
-                        } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                    when(state) {
+                        ViewPager2.SCROLL_STATE_SETTLING -> handlerBottomControl.post(hideBottomControls)
+                        ViewPager2.SCROLL_STATE_IDLE -> slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                            if (this is PhotoView) {
+                                if (getTag(R.id.HDR_TAG) as Boolean? == true) {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_HDR
+                                    if (isAndroid15) window.desiredHdrHeadroom = hdrHeadroom
+                                }
+                                else {
+                                    window.colorMode = ActivityInfo.COLOR_MODE_DEFAULT
+                                    if (isAndroid15) window.desiredHdrHeadroom = 0f
+                                }
+                            } else if (isAndroid15) window.desiredHdrHeadroom = 0f
+                        }
                     }
                 }
 
@@ -401,6 +404,14 @@ class PhotoSlideFragment : Fragment() {
             insets
         }
 
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
+            insets
+        }
+
+
         removeButton = view.findViewById(R.id.remove_button)
         coverButton = view.findViewById(R.id.cover_button)
         useAsButton = view.findViewById(R.id.set_as_button)
@@ -445,7 +456,7 @@ class PhotoSlideFragment : Fragment() {
                 if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) with(pAdapter.getPhotoAt(slider.currentItem)) {
                     MetaDataDialogFragment.newInstance(
                         NCShareViewModel.RemotePhoto(this, if (isRemote && eTag != Photo.ETAG_NOT_YET_UPLOADED) serverPath else ""),
-                        isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                        isHDR = window.colorMode == ActivityInfo.COLOR_MODE_HDR
                     ).show(parentFragmentManager, INFO_DIALOG)
                 }
             }

@@ -54,7 +54,6 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
@@ -331,10 +330,7 @@ class GalleryFragment: Fragment() {
                                 GalleryViewModel.SHARE_NORMAL -> {
                                     val clipData = ClipData.newUri(cr, "", uris[0])
                                     for (i in 1 until uris.size) {
-                                        if (isActive) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) clipData.addItem(cr, ClipData.Item(uris[i]))
-                                            else clipData.addItem(ClipData.Item(uris[i]))
-                                        }
+                                        if (isActive) clipData.addItem(cr, ClipData.Item(uris[i]))
                                     }
                                     startActivity(Intent.createChooser(Intent().apply {
                                         if (uris.size > 1) {
@@ -398,7 +394,7 @@ class GalleryFragment: Fragment() {
         parentFragmentManager.setFragmentResultListener(DESTINATION_DIALOG_REQUEST_KEY, viewLifecycleOwner) { _, result ->
             // Inform GallerySliderFragment
             childFragmentManager.findFragmentByTag(GallerySlideFragment::class.java.canonicalName)?.let {
-                childFragmentManager.setFragmentResult(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, bundleOf(DestinationDialogFragment.KEY_REMOVE_ORIGINAL to result.getBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL)))
+                childFragmentManager.setFragmentResult(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, Bundle().apply { putBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL, result.getBoolean(DestinationDialogFragment.KEY_REMOVE_ORIGINAL)) })
             }
 
             result.parcelable<Album>(DestinationDialogFragment.KEY_TARGET_ALBUM)?.let { targetAlbum ->

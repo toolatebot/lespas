@@ -73,6 +73,7 @@ class ObjectSearchSlideFragment : Fragment() {
     private var previousOrientationSetting = 0
     private var autoRotate = false
 
+    private lateinit var navigationBarBackgound: LinearLayout
     private lateinit var controlsContainer: LinearLayout
     private lateinit var captionArea: LinearLayout
     private lateinit var captionTextView: TextView
@@ -150,7 +151,7 @@ class ObjectSearchSlideFragment : Fragment() {
                 override fun onPageScrollStateChanged(state: Int) {
                     super.onPageScrollStateChanged(state)
                     //if (state == ViewPager2.SCROLL_STATE_SETTLING) handlerBottomControl.post(hideBottomControls)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && state == ViewPager2.SCROLL_STATE_IDLE) slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
+                    if (state == ViewPager2.SCROLL_STATE_IDLE) slider.getChildAt(0)?.findViewById<View>(R.id.media)?.apply {
                         if (this is PhotoView) {
                             if (getTag(R.id.HDR_TAG) as Boolean? == true) {
                                 window.colorMode = ActivityInfo.COLOR_MODE_HDR
@@ -202,12 +203,20 @@ class ObjectSearchSlideFragment : Fragment() {
             }
             insets
         }
+
+        navigationBarBackgound = view.findViewById(R.id.navigation_bar_background)
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarBackgound) { v, insets ->
+            v.isVisible = insets.isVisible(WindowInsetsCompat.Type.navigationBars())
+            if (v.isVisible) v.updateLayoutParams<ViewGroup.LayoutParams> { height = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom }
+            insets
+        }
+
         captionArea = view.findViewById(R.id.caption_area)
         captionTextView = view.findViewById(R.id.caption)
         view.findViewById<Button>(R.id.info_button).run {
             setOnClickListener {
                 handlerBottomControl.post(hideBottomControls)
-                if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) MetaDataDialogFragment.newInstance(pAdapter.getPhotoAt(slider.currentItem), isHDR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.colorMode == ActivityInfo.COLOR_MODE_HDR)
+                if (parentFragmentManager.findFragmentByTag(INFO_DIALOG) == null) MetaDataDialogFragment.newInstance(pAdapter.getPhotoAt(slider.currentItem), isHDR = window.colorMode == ActivityInfo.COLOR_MODE_HDR)
                     .show(parentFragmentManager, INFO_DIALOG)
             }
         }

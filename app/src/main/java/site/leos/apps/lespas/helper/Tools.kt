@@ -648,6 +648,18 @@ object Tools {
         }
     }
 
+    fun setSystemBarColor(window: Window, color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+                view.setBackgroundColor(color)
+                insets
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.statusBarColor = color
+        }
+    }
+
     //fun prepareShareOutIntent(context: Context, uris: List<Uri>, mimeType: String, action: String): Intent = Intent.createChooser(
     fun prepareShareOutIntent(uris: List<Uri>, mimeType: String): Intent = Intent.createChooser(
         Intent().apply {
@@ -1117,6 +1129,7 @@ object Tools {
     fun isPhotoFromGallery(photo: Photo) = photo.albumId == GalleryFragment.FROM_DEVICE_GALLERY
     fun isPhotoFromArchive(rPhoto: NCShareViewModel.RemotePhoto) = rPhoto.photo.albumId == GalleryFragment.FROM_ARCHIVE
     fun isMotionPhoto(flag: Int) = isBitSet(flag, Photo.MOTION_PHOTO)
+    fun isRaw(photo: Photo) = photo.mimeType.substringAfter('/') in RAW_FORMAT
 
     inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getParcelable(key, T::class.java)

@@ -23,7 +23,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
@@ -115,7 +114,7 @@ class TransferStorageWorker(private val context: Context, workerParams: WorkerPa
     private fun createForegroundInfo(notificationTitle: String): ForegroundInfo = ForegroundInfo(NOTIFICATION_ID, createNotification(notificationTitle))
 
     private fun createNotification(title: String): Notification {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) notificationManager.createNotificationChannel(NotificationChannel(WORKER_NAME, WORKER_NAME, NotificationManager.IMPORTANCE_LOW))
+        notificationManager.createNotificationChannel(NotificationChannel(WORKER_NAME, WORKER_NAME, NotificationManager.IMPORTANCE_LOW))
         return NotificationCompat.Builder(context, WORKER_NAME).setSmallIcon(R.drawable.ic_notification).setContentTitle(title).setTicker(title).setProgress(100, 0, false).setOngoing(true).build()
 /*
             // TODO cancel transfer worker
